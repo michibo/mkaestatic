@@ -2,8 +2,8 @@
 .SUFFIXES:
 .SUFFIXES:	.md .html .d
 
-MD              :=          python aestatics.py
-DEP             :=          python aestatics.py -d
+MD              :=          python statico.py
+DEP             :=          python statico.py -d
 
 comma :=,
 
