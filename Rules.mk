@@ -3,19 +3,16 @@ sp 		:= $(sp).x
 dirstack_$(sp)	:= $(d)
 d		:= $(dir)
 
-CF_$(d)     := '{"layout" : "index.html", \
-                 "title" : "Michael Borinsky"}'
+PAGES := aboutme feyncop
 
-TGTS_$(d)   := $(d)/aboutme.html $(d)/feyncop.html
-DEPS_$(d)	:= $(TGTS_$(d):%=%.d)
+$(call add_pages, $(PAGES))
 
-CLEAN		:= $(CLEAN) $(TGTS_$(d)) $(DEPS_$(d))
+$(call set, $(PAGES), "sitename", "Michael Borinsky")
+$(call set, $(PAGES), "layout", "template.html")
+$(call set, feyncop, "title", "feyncop & feyngen")
+$(call set, aboutme, "title", "about me")
 
-TGTS_$(d):	$(d)/Rules.mk
-
-TGTS_$(d):  CF_TGT:= $(CF_$(d))
-
-include	$(DEPS_$(d))
+$(call set, $(PAGES), "pages", $(call get_infos, $(PAGES)))
 
 d		:= $(dirstack_$(sp))
 sp		:= $(basename $(sp))
