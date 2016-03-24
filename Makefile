@@ -1,30 +1,29 @@
 
 .SUFFIXES:
-.SUFFIXES:	.md .html .d
+.SUFFIXES:	.md .html
 
 MD              :=          python statico.py
-DEP             :=          python statico.py -d
 
 comma :=,
 
-CF_TGT          = $(CF_LOCAL_$(basename $@))
+CF_CONFIG       = '{$(CF_LOCAL_$(basename $@))}'
+CF_TEMPLATE     = $(CF_TEMPLATE_$(basename $@))
 
 TGTS:=
 
 define add_pages
-$(eval TGTS_$(d):=$(addsuffix .html,$(1))) \
-$(eval DEPS_$(d):=$(addsuffix .d,$(1))) \
 $(eval PAGES_$(d):=$(1)) \
-$(eval ALL_PAGES+=$(PAGES_$(d)))\
+$(eval ALL_PAGES+=$(PAGES_$(d))) \
+$(eval TGTS_$(d):=$(addsuffix .html,$(1))) \
 $(eval TGTS+=$(TGTS_$(d))) \
-$(eval CLEAN+=$(TGTS_$(d)) $(DEPS_$(d))) \
-$(eval $(TGTS_$(d)):	$(d)Pages.mk ) \
-$(eval -include	$(DEPS_$(d))) \
-$(foreach p1,$(1),$(call init_single_local,$(p1),"url","$(d)$(p1).html"))
+$(eval CLEAN+=$(TGTS_$(d))) \
+$(eval $(TGTS_$(d)): Site.mk	$(d)Pages.mk $(d)$(2) ) \
+$(foreach p1,$(1),$(call init_single_local,$(p1),$(d)$(2)))
 endef
 
 define init_single_local
-$(eval CF_LOCAL_$(d)$(strip $(1)):=$(strip $(2)):$(strip $(3)))
+$(eval CF_LOCAL_$(d)$(strip $(1)) := "url":"$(d)$(strip $(1)).html") \
+$(eval CF_TEMPLATE_$(d)$(strip $(1)) := $(2))
 endef
 
 define set_single_local
@@ -47,10 +46,7 @@ make_info_blob = $(call get_info, $(1))
 get_infos = [$(call make_info_blob, $(firstword $(1)))$(foreach p, $(subst $(firstword $(1)),,$(1)),$(comma)$(call make_info_blob, $(p)))]
 
 %.html  :   %.md
-	$(MD)  --config '{$(CF_TGT)}' $< $@
-
-%.d     :   %.md
-	$(DEP) --config '{$(CF_TGT)}' $< $@
+	$(MD)  --config $(CF_CONFIG) --template $(CF_TEMPLATE) $< $@
 
 all:		targets
 

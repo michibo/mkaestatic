@@ -3,23 +3,12 @@ import json, jinja2, mistune
 
 import os, os.path, sys
 
-def render(template_root, config, md_source, web_root, source_root):
+def render(template, config, md_source, web_root, source_root):
     input_files = set()
 
-    class MyTemplateLoader(jinja2.FileSystemLoader):
-        def __init__(self, path):
-            self.path = path
-            
-            super(MyTemplateLoader, self).__init__(path)
+    path, tpl_fname = os.path.split(template)
 
-        def get_source(self, environment, template):
-            path = os.path.join(self.path, template)
-
-            input_files.add(path)
-
-            return super(MyTemplateLoader, self).get_source(environment, template)
-    
-    env = jinja2.Environment(loader=MyTemplateLoader(template_root))
+    env = jinja2.Environment( loader=jinja2.FileSystemLoader(path or './') )
 
     def static_load( input_file ):
         input_files.add(input_file)
@@ -27,7 +16,7 @@ def render(template_root, config, md_source, web_root, source_root):
 
     env.filters['static_load'] = static_load
 
-    template = env.get_template(config['layout'])
+    template = env.get_template(tpl_fname)
 
     local_keyword = "{local}"
     local_keyword_root = "{local}/"
@@ -59,12 +48,11 @@ def render(template_root, config, md_source, web_root, source_root):
 
 def main():
     parser = argparse.ArgumentParser(description='Compile a static website.')
-    parser.add_argument("-d", "--dependencies", action="store_true", default=False, help="build dependencies")
     parser.add_argument('input')
     parser.add_argument('output')
     parser.add_argument('--config', default="")
     parser.add_argument('--web_root', default="")
-    parser.add_argument('--templates', default="_templates")
+    parser.add_argument('--template')
     
     args = parser.parse_args()
 
@@ -74,17 +62,10 @@ def main():
         md_source = md_file.read()
 
     source_root = os.path.dirname(args.input)
-    rendered_source, input_files = render(args.templates, config, md_source, args.web_root, source_root)
+    rendered_source, input_files = render(args.template, config, md_source, args.web_root, source_root)
 
-    if args.dependencies:
-        with open(args.output, 'w') as d_file:
-            basename = os.path.splitext(args.input)[0]
-            target_file = basename + ".html"
-            dep_file = basename + ".d"
-            d_file.write("%s %s : %s\n" % ( target_file, dep_file, " ".join(input_files) ))
-    else:
-        with open(args.output, 'w') as html_file:
-            html_file.write(rendered_source)
+    with open(args.output, 'w') as html_file:
+        html_file.write(rendered_source)
     
 if __name__ == "__main__":
     main()
