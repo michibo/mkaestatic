@@ -51,7 +51,6 @@ get_infos = [$(call make_info_blob, $(firstword $(1)))$(foreach p, $(subst $(fir
 all:		targets
 
 include Pages.mk
-PAGES:=
 
 include Site.mk
 
@@ -65,7 +64,7 @@ serve:      targets
 
 .PHONY:		upload
 upload:     targets
-	tar cf - $(TGTS) $(STATIC_FOLDER) | ssh $(SSH_SERVER) "cd $(SSH_FOLDER) && tar xf - && chmod 701 . && chmod 705 -R *"
+	tar cf - $(TGTS) $(STATIC_FOLDERS) | ssh $(SSH_SERVER) "cd $(SSH_FOLDER) && tar xf - && chmod 701 . && chmod 705 -R *"
 
 .PHONY:		clean
 clean:
