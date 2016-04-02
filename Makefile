@@ -17,9 +17,11 @@ $(eval ALL_PAGES+=$(PAGES_$(d))) \
 $(eval TGTS_$(d):=$(addsuffix .html,$(1))) \
 $(eval TGTS+=$(TGTS_$(d))) \
 $(eval CLEAN+=$(TGTS_$(d))) \
-$(eval $(TGTS_$(d)): Site.mk	$(d)Pages.mk $(d)$(2) ) \
+$(eval $(TGTS_$(d)) : Site.mk $(d)Pages.mk $(d)$(2) ) \
 $(foreach p1,$(1),$(call init_single_local,$(p1),$(d)$(2)))
 endef
+
+DIR_PAGES = $(PAGES_$(d))
 
 define init_single_local
 $(eval CF_LOCAL_$(d)$(strip $(1)) := "url":"$(d)$(strip $(1)).html") \
