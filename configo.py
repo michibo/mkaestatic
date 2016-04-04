@@ -33,7 +33,6 @@ def main():
         template = None
 
     with open(args.output, 'w') as d_file:
-        #d_file.write("%s %s : %s\n" % ( target_file, dep_file, " ".join(input_files) ))
         d_file.write("CF_LOCAL_%s:=%s" % (basename, config_yaml))
 
         if template:
