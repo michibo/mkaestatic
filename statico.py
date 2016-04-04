@@ -12,7 +12,10 @@ def render(template, config, md_source):
     markdown = mistune.Markdown(renderer=mistune.Renderer(use_xhtml=True))
     content = markdown(md_source)
 
-    return template.render(content=content, config=config)
+    pages = config['pages']
+    del config['pages']
+
+    return template.render(content=content, page=config, pages=pages)
 
 def main():
     parser = argparse.ArgumentParser()

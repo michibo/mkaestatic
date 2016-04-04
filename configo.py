@@ -11,7 +11,7 @@ def main():
     with open(args.input, 'r') as md_file:
         md_source = md_file.read()
 
-    m = re.match( r"\s*---\s*(.*?)\s*---.*", md_source )
+    m = re.match( r"\s*(?:---|)\s*(.*?)\s*---.*", md_source )
 
     if m:
         config = yaml.load( m.group(1) )

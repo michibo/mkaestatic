@@ -1,6 +1,7 @@
 
+$(call include_dir, blog)
+
 TEMPLATE := _templates/template.html
 
-$(call setup_dir_pages, index readme, $(TEMPLATE))
-
+$(call setup_pages, index readme, $(TEMPLATE))
 
