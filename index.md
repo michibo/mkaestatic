@@ -1,4 +1,3 @@
 ---
-title : My BLAG
+template: readme.html
 ---
-Just another Blag...

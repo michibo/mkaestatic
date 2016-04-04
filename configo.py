@@ -23,8 +23,6 @@ def main():
     dep_file = basename + ".d"
 
     config['url'] = target_file
-    config_yaml = json.dumps(config, separators=(',', ':'))
-    config_yaml = config_yaml.strip("{}")
 
     if 'template' in config:
         template = config['template']
@@ -32,11 +30,14 @@ def main():
     else:
         template = None
 
+    config_yaml = json.dumps(config, separators=(',', ':'))
+    config_yaml = config_yaml.strip("{}")
+
     with open(args.output, 'w') as d_file:
-        d_file.write("CF_LOCAL_%s:=%s" % (basename, config_yaml))
+        d_file.write("CF_LOCAL_%s:=%s\n" % (basename, config_yaml))
 
         if template:
-            d_file.write("CF_TEMPLATE_%s:=%s" % ( basename, layout ))
+            d_file.write("CF_TEMPLATE_%s:=%s\n" % ( basename, template ))
 
 if __name__ == "__main__":
     main()
