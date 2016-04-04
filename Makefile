@@ -22,7 +22,7 @@ $(eval TGTS+=$(TGTS_$(d))) \
 $(eval CLEAN+=$(TGTS_$(d)) $(DEPS_$(d))) \
 $(eval $(TGTS_$(d)) $(DEPS_$(d)) : Site.mk $(d)Pages.mk ) \
 $(foreach p1,$(1),$(call init_single_local,$(p1),$(2))) \
-$(call set, $(PAGES_$(d)), "dir_pages", $(call get_infos, $(PAGES_$(d))))
+$(call set, $(PAGES_$(d)), "pages", $(call get_infos, $(PAGES_$(d))))
 endef
 
 define init_single_local

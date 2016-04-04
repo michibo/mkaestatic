@@ -3,9 +3,7 @@ import yaml, jinja2, mistune
 
 import os, os.path, sys, re
 
-def render(template, config, md_source:
-    input_files = set()
-
+def render(template, config, md_source):
     path, tpl_fname = os.path.split(template)
 
     env = jinja2.Environment( loader=jinja2.FileSystemLoader(path or './') )
