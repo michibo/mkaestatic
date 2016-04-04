@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        {% block head %}
+        <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, target-densityDpi=device-dpi" />
+        <meta name="description" content="{{ config.description }}">
+        <title>{% block title %}{{ config.sitename }} - {{ config.title|e }}{% endblock %}</title>
+        <link href="static/css/normalize.css" rel="stylesheet" />
+        <link href="static/css/milligram.min.css" rel="stylesheet" />
+        <link href="static/css/style.css" rel="stylesheet" />
+        {% endblock head %}
+    </head>
+
+    <body>
+        <div class="layout"><div>
+            <div class="header">
+                <div class="name">
+                    <h3>{{ config.sitename|e }}</h3>
+                </div>
+                <div class="nav">
+                    <ul class="nav-menu">
+                    {% for p in config.pages %}
+                        <li {% if p.url == config.url %} class="active"{% endif %}>
+                            <span>
+                                <a href="{{ p.url | urlencode }}">{{ p.title|e }}</a>
+                            </span>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="content">
+            {% block content %}
+                <h1 class="headline">{{ config.title|e }}</h1>
+                {{ content }}
+            {% endblock %}
+            </div>
+        </div></div>
+    </body>
+</html>

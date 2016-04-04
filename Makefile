@@ -50,6 +50,10 @@ get_infos = [$(call make_info_blob, $(firstword $(1)))$(foreach p, $(subst $(fir
 %.html  :   %.md
 	$(MD)  --config $(CF_CONFIG) --template $(CF_TEMPLATE) $< $@
 
+%.md::
+	touch $@
+
+
 all:		targets
 
 include Pages.mk
