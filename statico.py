@@ -1,7 +1,7 @@
 import argparse
-import json, jinja2, mistune
+import yaml, jinja2, mistune
 
-import os, os.path, sys
+import os, os.path, sys, re
 
 def render(template, config, md_source, web_root, source_root):
     input_files = set()
@@ -47,7 +47,7 @@ def render(template, config, md_source, web_root, source_root):
     return template.render(content=content, config=config), input_files
 
 def main():
-    parser = argparse.ArgumentParser(description='Compile a static website.')
+    parser = argparse.ArgumentParser()
     parser.add_argument('input')
     parser.add_argument('output')
     parser.add_argument('--config', default="")
@@ -56,10 +56,14 @@ def main():
     
     args = parser.parse_args()
 
-    config = json.loads(args.config)
+    config = yaml.load(args.config)
 
     with open(args.input, 'r') as md_file:
         md_source = md_file.read()
+
+    m = re.match( r"\s*---\s*.*?\s*---\s*(.*)", md_source )
+    if m:
+        md_source = m.group(1)
 
     source_root = os.path.dirname(args.input)
     rendered_source, input_files = render(args.template, config, md_source, args.web_root, source_root)
