@@ -9,7 +9,7 @@ def render(template, config, md_source):
     env = jinja2.Environment( loader=jinja2.FileSystemLoader(path or './') )
     template = env.get_template(tpl_fname)
 
-    markdown = mistune.Markdown(renderer=mistune.Renderer(use_xhtml=True))
+    markdown = mistune.Markdown(renderer=mistune.Renderer(escape=True,use_xhtml=True))
     content = markdown(md_source)
 
     pages = config['pages']

@@ -3,3 +3,7 @@
     list-style:none;
     display: inline;
 }
+.layout {
+     width: 800px;
+     margin: 0 auto;
+}

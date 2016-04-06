@@ -7,7 +7,7 @@ DEP              :=          python configo.py
 
 comma :=,
 
-CF_CONFIG       = '{$(CF_LOCAL_$(basename $@))}'
+CF_CONFIG       = '{$(CF_LOCAL_$(basename $@)),$(CF_GLOBAL)}'
 CF_TEMPLATE     = $(CF_TEMPLATE_$(basename $@))
 
 TGTS:=
@@ -22,37 +22,34 @@ $(eval TGTS+=$(TGTS_$(d))) \
 $(eval CLEAN+=$(TGTS_$(d)) $(DEPS_$(d))) \
 $(eval $(TGTS_$(d)) $(DEPS_$(d)) : Site.mk $(d)Pages.mk ) \
 $(foreach p1,$(1),$(call init_single_local,$(p1),$(2))) \
-$(eval PAGES_INFOS_$(d):= $(call get_infos, $(PAGES_$(d))) ) \
-$(call set, $(PAGES_$(d)), "pages", $(PAGES_INFOS_$(d))) \
-$(call set, $(PAGES_$(d)), "subdirs", )
+$(eval PAGES_INFOS_$(d):= $(call get_infos, $(PAGES_$(d))) )
 endef
 
+
 define init_single_local
-$(eval CF_TEMPLATE_$(d)$(strip $(1)) := $(2)) \
-$(eval -include $(d)$(strip $(1)).d ) \
-$(eval $(d)$(strip $(1)).html : $(CF_TEMPLATE_$(d)$(strip $(1))) )
+$(eval CF_TEMPLATE_$(strip $(1)) := $(2)) \
+$(eval -include $(strip $(1)).d ) \
+$(eval $(strip $(1)).html : $(CF_TEMPLATE_$(strip $(1))) )
 endef
 
 define set_single_local
-$(eval CF_LOCAL_$(d)$(strip $(1))+=,$(strip $(2)):$(strip $(3)))
+$(eval CF_LOCAL_$(strip $(1))+=,$(strip $(2)):$(strip $(3)))
 endef
 
 define include_dir
 $(eval sp 		:= $(sp).x) \
 $(eval dirstack_$(sp)	:= $(d)) \
-$(eval d		:= $(1)) \
-$(eval include $(1)/Pages.mk) \
+$(eval d		:= $(d)$(strip $(1))) \
+$(eval include $(d)Pages.mk) \
 $(eval d		:= $(dirstack_$(sp))) \
 $(eval sp		:= $(basename $(sp))) \
-$(eval SUBDIRS_$(d)+= $(1) )
+$(eval SUBDIRS_$(d)+=$(strip $(1)) )
 endef
 
 set = $(foreach p1,$(1),$(call set_single_local,$(p1),$(2),$(3)))
 
-get_info  = {$(CF_LOCAL_$(d)$(strip $(1)))}
+get_info  = {$(CF_LOCAL_$(strip $(1)))}
 get_infos = [$(call get_info, $(firstword $(1)))$(foreach p, $(subst $(firstword $(1)),,$(1)),$(comma)$(call get_info, $(p)))]
-
-get_subdir_info = "$(strip $(1))":{"url":$(d)$(strip $(1))/index.html}
 
 %.html  :   %.md
 	$(MD)  --config $(CF_CONFIG) --template $(CF_TEMPLATE) $< $@
@@ -60,14 +57,12 @@ get_subdir_info = "$(strip $(1))":{"url":$(d)$(strip $(1))/index.html}
 %.d  :   %.md
 	$(DEP)  $< $@
 
-
-%.md::
-	touch $@
-
-
 all:		targets
 
 include Pages.mk
+
+get_all_pages_info = "dirname":"$(subst /,,$(2))","pages":$(PAGES_INFOS_$(1)$(2)),"subdirs":{$(foreach sd,$(SUBDIRS_$(1)$(2)),$(subst /,,$(sd)):{$(call get_all_pages_info,$(1)$(2),$(sd))})}
+CF_GLOBAL := $(call get_all_pages_info)
 
 include Site.mk
 

@@ -22,7 +22,7 @@ def main():
     target_file = basename + ".html"
     dep_file = basename + ".d"
 
-    config['url'] = target_file
+    config['url'] = "/" + target_file
 
     if 'template' in config:
         template = config['template']
