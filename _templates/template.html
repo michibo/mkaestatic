@@ -7,9 +7,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, target-densityDpi=device-dpi" />
         <meta name="description" content="{{ page.description }}">
         <title>{% block title %}{{ page.sitename|e }} - {{ page.title|e }}{% endblock %}</title>
-        <link href="/static/css/normalize.css" rel="stylesheet" />
-        <link href="/static/css/milligram.min.css" rel="stylesheet" />
-        <link href="/static/css/style.css" rel="stylesheet" />
+        <link href="{{ page.static_prefix }}static/css/normalize.css" rel="stylesheet" />
+        <link href="{{ page.static_prefix }}static/css/milligram.min.css" rel="stylesheet" />
+        <link href="{{ page.static_prefix }}static/css/style.css" rel="stylesheet" />
         {% endblock head %}
     </head>
 
