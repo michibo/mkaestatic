@@ -40,8 +40,8 @@ index.md:
 
 You can access these attributes in the jinja template with in the *page* dictionary. For instance, *page.title* or *page.date* will refer to the values given in the header of *index.md* when *index.html* is compiled.
 
-Your jinja template might contain the following line for the *<title>* attribute in the html header:
-    
+Your jinja template might contain the following line for the *title* attribute in the html header:
+
     <title>{{ page.sitename|e }} - {{ page.title|e }}</title>
 
 #### Adding global attributes
