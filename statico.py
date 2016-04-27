@@ -15,6 +15,26 @@ def render(template, config, md_source):
     pages = config['pages']
     del config['pages']
 
+    ######## translate urls to relative ##########
+    # add information about how deep the document is in the file tree compared to root
+    config['depth'] = len(config['url'].split('/')) - 2
+    config['static_prefix'] = '../' * config['depth']
+    # remove leading forward slash in url paths
+    for i in range(len(pages)-1):
+        #print pages[i]
+        pages[i]['url'] = pages[i]['url'][1:]
+        #print pages[i]['url']
+    # move through tree and remove forward slashes in subdir urls
+    subdirs = config.get('subdirs', [])
+    for subdir in subdirs.keys():
+        for i in range(len(subdirs[subdir]['pages'])-1):
+            print config['subdirs'][subdir]['pages'][i]['url']
+            config['subdirs'][subdir]['pages'][i]['url'] = \
+                config['subdirs'][subdir]['pages'][i]['url'][1:]
+            print config['subdirs'][subdir]['pages'][i]['url']
+    # TODO: works only on first level, use generators! 
+    #print config
+
     return template.render(content=content, page=config, pages=pages)
 
 def main():
