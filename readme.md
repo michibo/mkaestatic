@@ -1,5 +1,4 @@
-title: Readme
----
+
 ### What is it?
 
 *MKAESTATIC* is a static website generator using markdown and make. The 1-page scripts which are called by the Makefile are written in python.
