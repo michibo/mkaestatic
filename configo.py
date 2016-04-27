@@ -1,5 +1,5 @@
 import argparse
-import yaml, os, json
+import yaml
 
 from mdsplit import mdsplit
 
@@ -13,15 +13,9 @@ def main():
     with open(args.input, 'r') as md_file:
         md_source = md_file.read()
 
-    cfg_src, _ = mdsplit(md_source)
-    config = yaml.load(cfg_src)
-
-    basename = os.path.splitext(args.input)[0]
-    target_file = basename + ".html"
-
-    config['url'] = target_file
-
-    config_yaml = json.dumps(config, separators=(',', ':'))
+    cfg_src, _ =    mdsplit(md_source)
+    config =        yaml.load(cfg_src)
+    config_yaml =   yaml.dump(config)
 
     with open(args.output, 'w') as yml_file:
         yml_file.write(config_yaml)
