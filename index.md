@@ -1,2 +1,3 @@
-template: readme.html
+layout: readme.html
+menu: no
 ---

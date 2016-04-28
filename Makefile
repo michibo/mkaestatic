@@ -2,47 +2,40 @@
 .SUFFIXES:
 .SUFFIXES:	.md .html .d .yml
 
-MD                :=          python statico.py
-CONF              :=          python configo.py
-DEP               :=          python depico.py
+MD                =          python statico.py $< --configs "$(strip $(CONFIGS))" --site_config $(SITE_CONFIG) --default_layout $(DEFAULT_TEMPLATE)
+CONF              =          python configo.py $<
 
-CF_TEMPLATE     = $(CF_TEMPLATE_$(basename $@))
+SITE_CONFIG       := Site.yml
 
-SITE_CONFIG     := Site.yml
-
-define init_single_local
-$(eval -include $(strip $(1)).d )
-endef
-
-define include_dir
-$(eval sp 		:= $(sp).x) \
-$(eval dirstack_$(sp)	:= $(d)) \
-$(eval d		:= $(d)$(strip $(1))) \
-$(eval include $(d)Pages.mk) \
-$(eval d		:= $(dirstack_$(sp))) \
-$(eval sp		:= $(basename $(sp))) \
-$(eval SUBDIRS_$(d)+=$(strip $(1)) )
-endef
+PAGES:=
+TGTS:=
+CONFIGS:=
+CLEAN:=
+MKCONFIGS:=
+DEPS:=
 
 %.html  :   %.md
-	$(MD) $< $@ --configs "$(strip $(CONFIGS))" --site_config $(SITE_CONFIG) --default_layout $(DEFAULT_TEMPLATE)
+	$(MD)
 
 %.yml   :   %.md
-	$(CONF) $< $@
+	$(CONF)
 
 %.d     :   %.md
+	$(MD)
 
 all:		targets
 
 include Pages.mk
 include Site.mk
 
-MKCONFIGS+= Pages.mk Site.mk
+MKCONFIGS+=Pages.mk Site.mk
 
-$(TGTS) : $(CONFIGS) $(MKCONFIGS)
+$(TGTS) $(DEPS) : $(CONFIGS) $(MKCONFIGS)
+
+FILES:= $(sort $(TGTS) $(REQUISITES))
 
 .PHONY:		targets
-targets:	$(TGTS)
+targets:	$(FILES)
 
 .PHONY:		serve
 serve:      targets
@@ -50,7 +43,7 @@ serve:      targets
 
 .PHONY:		upload
 upload:     targets
-	tar cf - $(TGTS) $(STATIC_FOLDERS) | ssh $(SSH_SERVER) "cd $(SSH_FOLDER) && tar xf - && chmod 701 . && chmod 705 -R *"
+	tar cf - $(FILES) | ssh $(SSH_SERVER) "cd $(SSH_FOLDER) && tar xf - && chmod 701 . && chmod 705 $(FILES)"
 
 .PHONY:		clean
 clean:

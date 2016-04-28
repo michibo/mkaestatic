@@ -1,48 +1,52 @@
 
-# Loading subdirectories
+# Standard non-recursive make things
 sp 		:= $(sp).x
 dirstack_$(sp)	:= $(d)
+d		:= $(dir)
+
+
+# Subdirectories, in random order
 
 # Load config and pages from blog/
-d		:= $(d)blog/
+dir	:= $(d)blog/
 
-SUBCONF := $(d)Pages.mk
-include $(SUBCONF)
-MKCONFIGS+= $(SUBCONF)
-
-d		:= $(dirstack_$(sp))
-sp		:= $(basename $(sp))
+include		$(dir)Pages.mk
+MKCONFIGS+=$(dir)Pages.mk
 
 # Load more subdirectories ...
+#dir	:= $(d)blog2/
 
-#sp 		:= $(sp).x
-#dirstack_$(sp)	:= $(d)
+#include		$(dir)Pages.mk
+#MKCONFIGS+=$(dir)Pages.mk
 
-# Load config and pages from blog2/
-#d		:= $(d)blog2/
-
-#SUBCONF := $(d)Pages.mk
-#include $(SUBCONF)
-#MKCONFIGS+= $(SUBCONF)
-
-#d		:= $(dirstack_$(sp))
-#sp		:= $(basename $(sp))
+#...
 
 
 # Add local pages to make:
 
-PAGES_$(d):= $(d)index $(d)readme
+PAGES_$(d):=$(d)index $(d)readme
+
+# Include the $(d) for reference to the local directory.
+# This is the famous non-recursive-make trick!
 
 # Set make variables to manage the pages
 
-PAGES:=$(PAGES) $(PAGES_$(d))
+PAGES+=$(PAGES_$(d))
 
 TGTS_$(d):=$(addsuffix .html,$(PAGES_$(d)))
-TGTS:=$(TGTS) $(TGTS_$(d))
+TGTS+=$(TGTS_$(d))
 
 CONFIGS_$(d):=$(addsuffix .yml,$(PAGES_$(d)))
-CONFIGS:=$(CONFIGS) $(CONFIGS_$(d))
+CONFIGS+=$(CONFIGS_$(d))
 
 DEPS_$(d):=$(addsuffix .d,$(PAGES_$(d)))
+DEPS+=$(DEPS_$(d))
 
 CLEAN+=$(TGTS_$(d)) $(CONFIGS_$(d)) $(DEPS_$(d))
+
+-include $(DEPS_$(d))
+
+# Standard non-recursive make things
+d		:= $(dirstack_$(sp))
+sp		:= $(basename $(sp))
+

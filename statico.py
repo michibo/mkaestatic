@@ -1,61 +1,44 @@
 import argparse
-import yaml, jinja2, mistune
-
-import sys
 
 import os
 from os import path
+from urlparse import urlparse
 
-from collections import defaultdict
+import yaml, jinja2, mistune
 
 from mdsplit import mdsplit
-
-def ddict():
-    return defaultdict(ddict)
-
-def get_pt_leave( path_tree, pure_fn ):
-    if pure_fn == "":
-        return path_tree
-
-    head, tail = os.path.split( pure_fn )
-    return get_pt_leave( path_tree, head )[tail]
-
-def set_pt_leave( path_tree, pure_fn, val ):
-    if pure_fn == "":
-        raise ValueError('Error: filename missing')
-
-    head, tail = os.path.split( pure_fn )
-    get_pt_leave( path_tree, head )[tail] = val
+from dirlisttree import dirlisttree
 
 def load_configs( config_fns, input_cfg_fn, input_root ):
-    cfg_tree = ddict()
+    cfg_tree = dirlisttree()
 
     for cfg_fn in config_fns:
         if path.isabs(cfg_fn):
             raise ValueError('Error: You cannot use absolute paths here: %s' % cfg_fn)
 
         cfg_fn_base, _ = path.splitext( cfg_fn )
-        target_fn      = cfg_fn_base + ".html"
-        url            = path.relpath( target_fn, input_root )
+        _, cfg_name = path.split(cfg_fn_base)
+        html_fn = "/" + cfg_fn_base + ".html"
 
         with open(cfg_fn, 'r') as cfg_file:
             cfg = yaml.load(cfg_file.read())
 
-        cfg['url'] = url
+        cfg['url'] = html_fn
+        cfg['name'] = cfg_name
 
         if 'title' not in cfg:
-            _, cfg['title'] = path.split(cfg_fn_base)
+            cfg['title'] = cfg_name
 
         if cfg_fn == input_cfg_fn:
             config = cfg
 
-        pure_fn, _ = path.splitext( cfg_fn )
+        pure_fn, _ = path.split( cfg_fn )
 
-        set_pt_leave( cfg_tree, pure_fn, cfg )
+        cfg_tree[pure_fn].append(cfg)
 
     return cfg_tree, config
 
-def render(md_source, default_layout, config, site_cfg, cfg_tree, way_home):
+def render(md_source, default_layout, site_cfg, config, cfg_tree, way_home, input_root):
     if 'layout' in config:
         layout = config['layout']
     else:
@@ -63,20 +46,44 @@ def render(md_source, default_layout, config, site_cfg, cfg_tree, way_home):
 
     tpl_path, tpl_fname = path.split(layout)
 
-    def url_parser( url ):
-        if url.startswith('/') and not url.startswith('//'):
-            url = string.lstrip(url, '/')
-            url = path.join( way_home, url )
+    hard_dependencies = []
+    soft_dependencies = []
 
+    def url_parser( url ):
+        res = urlparse( url )
+
+        if res.netloc:
+            return url
+
+        if res.path.startswith('/'):
+            url = res.path.lstrip('/')
+            soft_dependencies.append(url)
+            url = path.join( way_home, url )
+        else:
+            soft_dependencies.append(path.join(input_root, res.path))
+        
         return url
 
-    env = jinja2.Environment( loader=jinja2.FileSystemLoader(tpl_path or './') )
 
-    def local_url( url ):
+    class MyTemplateLoader(jinja2.FileSystemLoader):
+        def __init__(self, path):
+            self.path = path
+            
+            super(MyTemplateLoader, self).__init__(path)
+
+        def get_source(self, environment, template):
+            tpl_fn = path.join(self.path, template)
+            hard_dependencies.append(tpl_fn)
+
+            return super(MyTemplateLoader, self).get_source(environment, template)
+    
+    env = jinja2.Environment( loader=MyTemplateLoader(tpl_path or './') )
+
+    def localurl( url ):
         url = url_parser( url )
-        return url 
+        return url
 
-    env.filters['local_url'] = local_url
+    env.filters['localurl'] = localurl
 
     template = env.get_template(tpl_fname)
 
@@ -92,12 +99,23 @@ def render(md_source, default_layout, config, site_cfg, cfg_tree, way_home):
     markdown = mistune.Markdown(renderer=MyRenderer(escape=True, use_xhtml=True))
     content = markdown(md_source)
 
-    return template.render( content=content, site=site_cfg, page=config, root=cfg_tree, home=way_home )
+    try:
+        html_code = template.render( content=content, site=site_cfg, page=config, root=cfg_tree, home=way_home )
+    except jinja2.TemplateNotFound, e:
+        html_code = "Template not found: %s" % str(e)
+
+    return html_code, soft_dependencies, hard_dependencies
+
+def get_make_code(output_fn, soft_dependencies, hard_dependencies):
+    
+    mk_src = "%s : %s\n" % ( output_fn, " ".join(hard_dependencies) )
+    mk_src+= "REQUISITES+=%s\n" % (" ".join(soft_dependencies))
+    
+    return mk_src
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('input')
-    parser.add_argument('output')
     parser.add_argument('--default_layout', type=str)
     parser.add_argument('--configs', type=str)
     parser.add_argument('--site_config', type=str)
@@ -106,7 +124,9 @@ def main():
     input_fn = args.input
 
     input_fn_base, _ = path.splitext( input_fn )
+    output_html_fn = input_fn_base + ".html"
     input_cfg_fn = input_fn_base + ".yml"
+    input_dep_fn = input_fn_base + ".d"
 
     input_root, _ = path.split( input_fn_base )
 
@@ -115,7 +135,7 @@ def main():
     with open(args.site_config, 'r') as site_cfg_file:
         site_cfg = yaml.load(site_cfg_file.read())
 
-    cfg_fns = args.configs.split(' ')
+    cfg_fns = args.configs.strip().split(' ')
 
     cfg_tree, config = load_configs( cfg_fns, input_cfg_fn, input_root )
 
@@ -124,10 +144,14 @@ def main():
 
     _, md_source = mdsplit(md_source)
 
-    rendered_source = render(md_source, args.default_layout, site_cfg, config, cfg_tree, way_home)
+    rendered_source, soft_dependencies, hard_dependencies = render(md_source, args.default_layout, site_cfg, config, cfg_tree, way_home, input_root)
+    mk_src = get_make_code(output_html_fn, soft_dependencies, hard_dependencies)
 
-    with open(args.output, 'w') as html_file:
+    with open(output_html_fn, 'w') as html_file:
         html_file.write(rendered_source)
+
+    with open(input_dep_fn, 'w') as dep_file:
+        dep_file.write(mk_src)
     
 if __name__ == "__main__":
     main()
