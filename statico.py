@@ -1,5 +1,7 @@
 import argparse
 
+from codecs import open
+
 import os
 from os import path
 from urlparse import urlparse
@@ -20,7 +22,7 @@ def load_configs( config_fns, input_cfg_fn, input_root ):
         _, cfg_name = path.split(cfg_fn_base)
         html_fn = "/" + cfg_fn_base + ".html"
 
-        with open(cfg_fn, 'r') as cfg_file:
+        with open(cfg_fn, 'r', encoding='utf-8') as cfg_file:
             cfg = yaml.load(cfg_file.read())
 
         cfg['url'] = html_fn
@@ -49,7 +51,7 @@ def render(md_source, default_layout, site_cfg, config, cfg_tree, way_home, inpu
         hard_dependencies.append(mirror_fn)
 
         try:
-            with open(mirror_fn, 'r') as mirror_file:
+            with open(mirror_fn, 'r', encoding='utf-8') as mirror_file:
                 html_code= mirror_file.read()
         except FileNotFound, e:
             html_code= "Mirror file not found: %s" % str(e)
@@ -147,14 +149,14 @@ def main():
 
     way_home = path.relpath( os.curdir, input_root )
 
-    with open(args.site_config, 'r') as site_cfg_file:
+    with open(args.site_config, 'r', encoding='utf-8') as site_cfg_file:
         site_cfg = yaml.load(site_cfg_file.read())
 
     cfg_fns = args.configs.strip().split(' ')
 
     cfg_tree, config = load_configs( cfg_fns, input_cfg_fn, input_root )
 
-    with open(input_fn, 'r') as md_file:
+    with open(input_fn, 'r', encoding='utf-8') as md_file:
         md_source = md_file.read()
 
     _, md_source = mdsplit(md_source)
@@ -162,10 +164,10 @@ def main():
     rendered_source, soft_dependencies, hard_dependencies = render(md_source, args.default_layout, site_cfg, config, cfg_tree, way_home, input_root)
     mk_src = get_make_code(output_html_fn, input_dep_fn, soft_dependencies, hard_dependencies)
 
-    with open(output_html_fn, 'w') as html_file:
+    with open(output_html_fn, 'w', encoding='utf-8') as html_file:
         html_file.write(rendered_source)
 
-    with open(input_dep_fn, 'w') as dep_file:
+    with open(input_dep_fn, 'w', encoding='utf-8') as dep_file:
         dep_file.write(mk_src)
     
 if __name__ == "__main__":

@@ -1,4 +1,7 @@
 import argparse
+
+from codecs import open
+
 import yaml
 
 from os import path
@@ -15,7 +18,7 @@ def main():
     input_fn_base, _ = path.splitext( input_fn )
     output_cfg_fn = input_fn_base + ".yml"
 
-    with open(args.input, 'r') as md_file:
+    with open(args.input, 'r', encoding='utf-8') as md_file:
         md_source = md_file.read()
 
     cfg_src, _ =    mdsplit(md_source)
@@ -23,7 +26,7 @@ def main():
     config_yaml =   yaml.dump(config)
 
     if path.exists( output_cfg_fn ):
-        with open(output_cfg_fn, 'r') as yml_file_ro:
+        with open(output_cfg_fn, 'r', encoding='utf-8') as yml_file_ro:
             if yml_file_ro.read() != config_yaml:
                 overwrite = True
             else:
@@ -32,7 +35,7 @@ def main():
         overwrite = True
 
     if overwrite:
-        with open(output_cfg_fn, 'w') as yml_file:
+        with open(output_cfg_fn, 'w', encoding='utf-8') as yml_file:
             yml_file.write(config_yaml)
 
 if __name__ == "__main__":

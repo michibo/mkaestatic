@@ -1,7 +1,7 @@
 
 ### What is it?
 
-*MKAESTATIC* is a static website generator using markdown and make. The 1-page scripts which are called by the Makefile are written in python.
+*MKAESTATIC* is a static website generator using non-recursive make, python and markdown. The non-recursive make approach is based Emile van Bergen's article [Implementing non-recursive make](https://evbergen.home.xs4all.nl/nonrecursive-make.html) which is itself based on the paper [Recursive Make Considered Harmful](http://aegis.sourceforge.net/auug97.pdf).
 
 ### Quickstart
 
