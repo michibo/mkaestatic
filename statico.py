@@ -39,15 +39,30 @@ def load_configs( config_fns, input_cfg_fn, input_root ):
     return cfg_tree, config
 
 def render(md_source, default_layout, site_cfg, config, cfg_tree, way_home, input_root):
+
+    hard_dependencies = []
+    soft_dependencies = []
+
+    if 'mirror' in config:
+        mirror_fn = config['mirror']
+        
+        hard_dependencies.append(mirror_fn)
+
+        try:
+            with open(mirror_fn, 'r') as mirror_file:
+                html_code= mirror_file.read()
+        except FileNotFound, e:
+            html_code= "Mirror file not found: %s" % str(e)
+
+        return html_code, soft_dependencies, hard_dependencies
+
+
     if 'layout' in config:
         layout = config['layout']
     else:
         layout = default_layout
 
     tpl_path, tpl_fname = path.split(layout)
-
-    hard_dependencies = []
-    soft_dependencies = []
 
     def url_parser( url ):
         res = urlparse( url )
@@ -106,9 +121,9 @@ def render(md_source, default_layout, site_cfg, config, cfg_tree, way_home, inpu
 
     return html_code, soft_dependencies, hard_dependencies
 
-def get_make_code(output_fn, soft_dependencies, hard_dependencies):
+def get_make_code(output_fn, input_dep_fn, soft_dependencies, hard_dependencies):
     
-    mk_src = "%s : %s\n" % ( output_fn, " ".join(hard_dependencies) )
+    mk_src = "%s %s : %s\n" % ( output_fn, input_dep_fn, " ".join(hard_dependencies) )
     mk_src+= "REQUISITES+=%s\n" % (" ".join(soft_dependencies))
     
     return mk_src
@@ -145,7 +160,7 @@ def main():
     _, md_source = mdsplit(md_source)
 
     rendered_source, soft_dependencies, hard_dependencies = render(md_source, args.default_layout, site_cfg, config, cfg_tree, way_home, input_root)
-    mk_src = get_make_code(output_html_fn, soft_dependencies, hard_dependencies)
+    mk_src = get_make_code(output_html_fn, input_dep_fn, soft_dependencies, hard_dependencies)
 
     with open(output_html_fn, 'w') as html_file:
         html_file.write(rendered_source)

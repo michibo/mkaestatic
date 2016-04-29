@@ -1,3 +1,3 @@
-layout: readme.html
-menu: no
+mirror: readme.html
+nomenu: true
 ---

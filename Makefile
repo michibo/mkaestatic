@@ -30,7 +30,7 @@ include Site.mk
 
 MKCONFIGS+=Pages.mk Site.mk
 
-$(TGTS) $(DEPS) : $(CONFIGS) $(MKCONFIGS)
+$(TGTS) $(DEPS) : $(CONFIGS) $(MKCONFIGS) $(SITE_CONFIG)
 
 FILES:= $(sort $(TGTS) $(REQUISITES))
 

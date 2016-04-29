@@ -1,105 +1,81 @@
-
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  {% block head %}
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{{ site.description|e }}">
 
-  <title>{% block title %}{{ site.name|e }} - {{ page.title|e }}{% endblock %}</title>
+    <title>{% block title %}{{ site.name|e }} - {{ page.title|e }}{% endblock %}</title>
 
-  <link rel="stylesheet" type="text/css" href="{{ '/static/css/grid.css' | localurl }}">
-  <link rel="stylesheet" type="text/css" href="{{ '/static/css/style.css' | localurl }}">
-  {% endblock head %}
+    <link rel="stylesheet" href="{{ '/static/css/pure-min.css' | localurl }}">
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="{{ '/static/css/grids-responsive-old-ie-min.css' | localurl }}">
+    <![endif]--> 
+      
+    <!--[if gt IE 8]><!-->
+        <link rel="stylesheet" href="{{ '/static/css/grids-responsive-min.css' | localurl }}">
+    <!--<![endif]-->
+
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="{{ '/static/css/style-old-ie.css' | localurl }}">
+    <![endif]-->
+
+    <!--[if gt IE 8]><!-->
+        <link rel="stylesheet" href="{{ '/static/css/style.css' | localurl }}">
+    <!--<![endif]-->
 </head>
 <body>
+<div id="layout" class="pure-g">
 
-  <div class="ui fixed inverted menu">
-    <div class="ui container">
-      
-      <a href="{{ home }}" class="header item">
-        <img class="logo" src="assets/images/logo.png">
-        {{ site.name|e }}
-      </a>
-      {% for p in root if p.menu != False %}
-      <a href="{{ p.url | localurl | urlencode }}" class="item">{{ p.title|e }}</a>
-      {% endfor %}
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+        <div class="header">
+            <h1 class="brand-title">{{ site.name|e }}</h1>
+            <h2 class="brand-tagline">{{ site.tagline|e }}</h2>
 
-      <div class="ui simple dropdown item">
-        Blog <i class="dropdown icon"></i>
-        <div class="menu">
-          {% for p in root.blog %}
-          <a class="item" href="{{ p.url  | localurl | urlencode }}">{{ p.title|e }}</a>
-          {% endfor %}
-          <div class="divider"></div>
-          <div class="header">Archive</div>
-          <div class="item">
-            <i class="dropdown icon"></i>
-            Sub Menu
-            <div class="menu">
-              {% for p in root.blog.archive %}
-              <a class="item" href="{{ p.url  | localurl | urlencode }}">{{ p.title|e }}</a>
-              {% endfor %}
+            <nav class="nav">
+                <ul class="nav-list">
+                    {% for p in root if not p.nomenu %}
+                    <li class="nav-item">
+                        <a class="pure-button" href="{{ p.url  | localurl | urlencode }}">{{ p.title|e }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+
+            <div class="pure-menu pure-menu-horizontal">
+                <ul class="pure-menu-list">
+                    <li class="pure-menu-item pure-menu-selected"><a href="{{ home }}" class="pure-menu-link">Home</a></li>
+                    <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
+                        <a href="#" id="menuLink1" class="pure-menu-link">Blog</a>
+                        <ul class="pure-menu-children">
+                            {% for p in root.blog %}
+                            <li class="pure-menu-item"><a href="{{ p.url  | localurl | urlencode }}" class="pure-menu-link">{{ p.title|e }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
             </div>
-          </div>
-          <a class="item" href="#">Link Item</a>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <div class="ui main text container">
-  {% block content %}
-    <h1 class="ui header">{{ page.title|e }}</h1>
-    {{ content }}
-  {% endblock %}
-  </div>
-
-  <div class="ui inverted vertical footer segment">
-    <div class="ui center aligned container">
-      <div class="ui stackable inverted divided grid">
-        <div class="three wide column">
-          <h4 class="ui inverted header">Group 1</h4>
-          <div class="ui inverted link list">
-            <a href="#" class="item">Link One</a>
-            <a href="#" class="item">Link Two</a>
-            <a href="#" class="item">Link Three</a>
-            <a href="#" class="item">Link Four</a>
-          </div>
         </div>
-        <div class="three wide column">
-          <h4 class="ui inverted header">Group 2</h4>
-          <div class="ui inverted link list">
-            <a href="#" class="item">Link One</a>
-            <a href="#" class="item">Link Two</a>
-            <a href="#" class="item">Link Three</a>
-            <a href="#" class="item">Link Four</a>
-          </div>
-        </div>
-        <div class="three wide column">
-          <h4 class="ui inverted header">Group 3</h4>
-          <div class="ui inverted link list">
-            <a href="#" class="item">Link One</a>
-            <a href="#" class="item">Link Two</a>
-            <a href="#" class="item">Link Three</a>
-            <a href="#" class="item">Link Four</a>
-          </div>
-        </div>
-        <div class="seven wide column">
-          <h4 class="ui inverted header">Footer Header</h4>
-          <p>Extra space for a call to action inside the footer that could help re-engage users.</p>
-        </div>
-      </div>
-      <div class="ui inverted section divider"></div>
-      <img src="assets/images/logo.png" class="ui centered mini image">
-      <div class="ui horizontal inverted small divided link list">
-        <a class="item" href="#">Site Map</a>
-        <a class="item" href="#">Contact Us</a>
-        <a class="item" href="#">Terms and Conditions</a>
-        <a class="item" href="#">Privacy Policy</a>
-      </div>
     </div>
-  </div>
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+        <div>
+            {% block content %}
+            <h1 class="content-subhead">{{ page.title|e }}</h1>
+            {{ content }}
+            {% endblock %}
+
+            <div class="footer">
+                <div class="pure-menu pure-menu-horizontal">
+                    <ul>
+                        <li class="pure-menu-item"><a href="https://github.com/michibo/mkaestatic" class="pure-menu-link">GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{{ '/static/js/menus.js' | localurl }}"></script>
 </body>
 </html>

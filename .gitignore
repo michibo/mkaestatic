@@ -1,2 +1,6 @@
 *.html
+*.pyc
+*.d
+*.yml
 !_templates/*.html
+

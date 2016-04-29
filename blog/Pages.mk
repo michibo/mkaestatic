@@ -36,6 +36,7 @@ DEPS+=$(DEPS_$(d))
 
 CLEAN+=$(TGTS_$(d)) $(CONFIGS_$(d)) $(DEPS_$(d))
 
+-include $(DEPS_$(d))
 
 # Standard non-recursive make things
 d		:= $(dirstack_$(sp))
