@@ -4,7 +4,10 @@ from codecs import open
 
 import os
 from os import path
-from urlparse import urlparse
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
 
 import yaml, jinja2, mistune
 
@@ -53,7 +56,7 @@ def render(md_source, default_layout, site_cfg, config, cfg_tree, way_home, inpu
         try:
             with open(mirror_fn, 'r', encoding='utf-8') as mirror_file:
                 html_code= mirror_file.read()
-        except FileNotFound, e:
+        except FileNotFound as e:
             html_code= "Mirror file not found: %s" % str(e)
 
         return html_code, soft_dependencies, hard_dependencies
@@ -118,7 +121,7 @@ def render(md_source, default_layout, site_cfg, config, cfg_tree, way_home, inpu
 
     try:
         html_code = template.render( content=content, site=site_cfg, page=config, root=cfg_tree, home=way_home )
-    except jinja2.TemplateNotFound, e:
+    except jinja2.TemplateNotFound as e:
         html_code = "Template not found: %s" % str(e)
 
     return html_code, soft_dependencies, hard_dependencies
