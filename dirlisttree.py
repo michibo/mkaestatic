@@ -31,7 +31,7 @@ class dirlisttree(defaultdict):
 
     def __str__(self):
         return "%s; %s" % (", ".join( "%s" % fn for fn in self.files ),
-               ", ".join( "%s : %s" % (key,val) for key,val in self.iteritems() ))
+               ", ".join( "%s : %s" % (key,val) for key,val in self.items() ))
 
     def append(self, content):
         self.files.append(content)
