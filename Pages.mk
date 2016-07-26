@@ -24,12 +24,14 @@ MKCONFIGS+=$(dir)Pages.mk
 
 # Add local pages to make:
 
-PAGES_$(d):=$(d)index $(d)readme
+PAGES_SRC_$(d):=$(d)index.md $(d)readme.md
 
 # Include the $(d) for reference to the local directory.
 # This is the famous non-recursive-make trick!
 
 # Set make variables to manage the pages
+
+PAGES_$(d):=$(basename $(PAGES_SRC_$(d)))
 
 PAGES+=$(PAGES_$(d))
 

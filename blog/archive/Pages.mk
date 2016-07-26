@@ -7,12 +7,14 @@ d		:= $(dir)
 
 # Add local pages to make:
 
-PAGES_$(d):= $(patsubst %.md,%,$(wildcard $(d)*.md))
+PAGES_$(d):= $(wildcard $(d)*.md)
 # This includes all .md files in the 
 # directory in this case.
 
 
 # Set make variables to manage the pages
+
+PAGES_$(d):=$(basename $(PAGES_SRC_$(d)))
 
 PAGES+=$(PAGES_$(d))
 
