@@ -1,11 +1,14 @@
 
+
 # Standard non-recursive make things
 sp 		:= $(sp).x
 dirstack_$(sp)	:= $(d)
 d		:= $(dir)
 
 
+#########################################
 # Subdirectories, in random order
+#########################################
 
 # Load config and pages from blog/
 dir	:= $(d)blog/
@@ -21,13 +24,19 @@ MKCONFIGS+=$(dir)Pages.mk
 
 #...
 
-
+#########################################
 # Add local pages to make:
+#########################################
 
 PAGES_SRC_$(d):=$(d)index.md $(d)readme.md
 
 # Include the $(d) for reference to the local directory.
 # This is the famous non-recursive-make trick!
+
+#########################################
+#########################################
+
+### Recursive make stuff, do not change!
 
 # Set make variables to manage the pages
 

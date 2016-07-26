@@ -10,13 +10,53 @@
 - Copy the *Makefile*, *statico.py*, *configo.py* into your project folder.
 - Create two config files: *Pages.mk* and *Site.mk*
 
+#### Setup your subdirectories
+
+In *Pages.mk* you can configure the pages of a directory and the subdirectories. The file is quite long, but most of it is just recursive make management. 
+First subdirectories need to be added in random order. Each subdirectory needs to have its own *Pages.mk* file. You can add a subdirectory by using the three lines
+
+    dir	:= $(d)blog/
+
+    include		$(dir)Pages.mk
+    MKCONFIGS+=$(dir)Pages.mk
+
+where **blog/** is replaced by the respective subdirectory. Note, that you need to include the **$(d)** before the directory name. This variable adds the name of the current directory to the 
+name of the subdirectory.
+
 #### Setup your pages
 
-In *Pages.mk* you can configure the pages of a directory. The file could look like this:
+The names of the page files can be added in one line of the *Pages.mk* file. Every page file is assumed to be some Markdown file in the current directory (same directory as the Pages.mk - file that you are editing). As for the subdirectory the prefix **$(d)** needs to be added file name. 
 
-    TEMPLATE := _templates/template.html
+    ... non recursive make stuff ...
 
-    $(call setup_pages, index readme, $(TEMPLATE))
+    #########################################
+    # Subdirectories, in random order
+    #########################################
+
+    # Load config and pages from blog/
+    dir	:= $(d)blog/
+
+    include		$(dir)Pages.mk
+    MKCONFIGS+=$(dir)Pages.mk
+
+    # Load more subdirectories ...
+    #dir	:= $(d)blog2/
+
+    #include		$(dir)Pages.mk
+    #MKCONFIGS+=$(dir)Pages.mk
+
+    #...
+
+    #########################################
+    # Add local pages to make:
+    #########################################
+
+    PAGES_$(d):=$(d)index $(d)readme
+
+    # Include the $(d) for reference to the local directory.
+    # This is the famous non-recursive-make trick!
+
+    ... more non recursive make stuff ...
 
 Two files are added as target for your project: *index.html* and *readme.html*.
 You can modify the generated content by editing *index.md* and *readme.md*.
