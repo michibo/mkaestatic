@@ -1,15 +1,19 @@
 
 ### What is it?
 
-*mkaestatic* is a static website generator using non-recursive [make](//www.gnu.org/software/make/), python and markdown. The non-recursive make approach is based Emile van Bergen's article [Implementing non-recursive make](//evbergen.home.xs4all.nl/nonrecursive-make.html) which is itself based on the paper [Recursive Make Considered Harmful](//aegis.sourceforge.net/auug97.pdf).
+*mkaestatic* is a **static** website generator using non-recursive [make](//www.gnu.org/software/make/), [python](//www.python.org/) and [markdown](//daringfireball.net/projects/markdown/). The non-recursive make approach is based Emile van Bergen's article [Implementing non-recursive make](//evbergen.home.xs4all.nl/nonrecursive-make.html) which is itself based on the paper [Recursive Make Considered Harmful](//aegis.sourceforge.net/auug97.pdf).
 
-Additionally *mkaestatic* strictly uses relative urls for the static page. Therefore the page can be accessed using the browser directly on the file system, i.e. using file:// instead of http://, without the need for a webserver.
+Additionally, *mkaestatic* strictly uses relative urls for the static page. Therefore the page can be accessed using the browser directly on the file system, i.e. using file:// instead of http://, without the need for a webserver.
 
-*mkaestatic* keeps track of requisites using the features of make. It can therefore be easily integrated into other static content generation programs as for instance image or pdf rendering scripts.
+*mkaestatic* keeps track of requisites using the features of make. It can therefore be easily integrated into other static content generation toolchains based on make as for instance image or pdf rendering scripts. 
 
 ### Requirements
 
-To run *mkaestatic* a python (2.7 or 3.x) installation is required. *mkaestatic* additionally uses [mistune](//github.com/lepture/mistune) for markdown rendering, [jinja2](//jinja.pocoo.org/docs/dev/) as a template engine and [PyYAML](//pyyaml.org/) to read and write config files. 
+To run *mkaestatic* a 
+- python (2.7 or 3.x) installation is required. *mkaestatic* additionally uses 
+- [mistune](//github.com/lepture/mistune) as its markdown implementation, 
+- [jinja2](//jinja.pocoo.org/docs/dev/) as a template engine and 
+- [PyYAML](//pyyaml.org/) to read and write config files. 
 
 ### Quickstart
 
@@ -20,9 +24,34 @@ To run *mkaestatic* a python (2.7 or 3.x) installation is required. *mkaestatic*
 
 #### Setup your pages
 
-The names of the page files can be added in one line of the *Pages.mk* file. Every page file is assumed to be some Markdown file with a .md suffix in the *current* directory (same directory as the Pages.mk - file that you are editing). As for the subdirectory the prefix **$(d)** needs to be added file name. 
+In *Pages.mk* you can configure the pages of a directory and the subdirectories. The file is quite long, but most of it is just recursive make management. 
+
+The filenames of the page-files can be added in one line of the *Pages.mk* file:
+
+    PAGES_SRC_$(d):=$(d)index.md $(d)readme.md
+
+A page is a markdown file with a .md suffix, which will eventually be compiled to a html-file. The pages must be added to the *Pages.mk*-file in the same directory as the page. A prefix **$(d)** needs to be added file name. This adds the name of the current directory to the path of page in accordance to non-recursive make practice. The make variable *PAGES_SRC_$(d)* must be set to the list of pages:
 
     ... non recursive make stuff ...
+    
+    ... subdirectory stuff ...    
+
+    #########################################
+    # Add local pages to make:
+    #########################################
+
+    PAGES_SRC_$(d):=$(d)index.md $(d)readme.md
+
+    # Include the $(d) for reference to the local directory.
+    # This is the famous non-recursive-make trick!
+
+    ... more non recursive make stuff ...
+
+Two files are added as target for your project: *index.html* and *readme.html*, which will be generated from the markdown files *index.md* and *readme.md* respectively. 
+
+#### Setup your subdirectories (optional feature)
+
+To add subdirectories to the mkaestatic tree you need to modify the following section of *Pages.mk*:
 
     #########################################
     # Subdirectories, in random order
@@ -42,23 +71,6 @@ The names of the page files can be added in one line of the *Pages.mk* file. Eve
 
     #...
 
-    #########################################
-    # Add local pages to make:
-    #########################################
-
-    PAGES_SRC_$(d):=$(d)index.md $(d)readme.md
-
-    # Include the $(d) for reference to the local directory.
-    # This is the famous non-recursive-make trick!
-
-    ... more non recursive make stuff ...
-
-Two files are added as target for your project: *index.html* and *readme.html*.
-You can modify the generated content by editing *index.md* and *readme.md*.
-
-#### Setup your subdirectories (optional feature)
-
-In *Pages.mk* you can configure the pages of a directory and the subdirectories. The file is quite long, but most of it is just recursive make management. 
 First subdirectories need to be added in random order. Each subdirectory needs to have its own *Pages.mk* file. You can add a subdirectory by using the three lines
 
     dir	:= $(d)blog/
@@ -66,8 +78,9 @@ First subdirectories need to be added in random order. Each subdirectory needs t
     include		$(dir)Pages.mk
     MKCONFIGS+=$(dir)Pages.mk
 
-where **blog/** is replaced by the respective subdirectory. Note, that you need to include the **$(d)** before the directory name. This variable adds the name of the current directory to the 
-name of the subdirectory.
+where *blog/* is replaced by the respective subdirectory. Note, that you need to include the *$(d)* before the directory name. This variable adds the name of the current directory to the name of the subdirectory.
+
+In the subdirectory you can add additional pages or subdirectories recursively. The subdirectories will be included in the standard non-recursive make style.
 
 #### Configuration of pages
 
@@ -104,9 +117,9 @@ will set the *site.name* and *site.tagline* attributes appropriately. The attrib
 
 ##### Local and strictly global attributes
 
-You can access these attributes in the jinja template with in the *page* dictionary. For instance, *page.title* or *page.date* will refer to the values given in the header of *index.md* when *index.html* is compiled.
+You can access these attributes in the jinja template with in the *page* variable. For instance, **page.title** or **page.date** will refer to the values given in the header of *index.md* when *index.html* is compiled.
 
-Your jinja template might contain the following line for the *title* attribute in the html header:
+Your jinja template might contain the following line for the **title** attribute in the html header:
 
     <title>{{ site.name|e }} - {{ page.title|e }}</title>
 
@@ -119,7 +132,7 @@ But in many cases the attributes of other pages are needed. If for instance a me
 
 *mkaestatic* provides a simple yet powerful data structure for these situations:
 
-In the jinja template the variable *root* can be accessed. This variable mirrors the content of the top-level directory in the mkaestatic directory tree. The *root* variable is iterable. If we loop over *root* we loop over the configurations of all pages in the top-level directory. For instance, 
+In the jinja template the variable **root** can be accessed. This variable mirrors the content of the top-level directory in the mkaestatic directory tree. The **root** variable is iterable. If we loop over **root** we loop over the configurations of all pages in the top-level directory. For instance, 
 
     {% for p in root if not p.nomenu %}
         <li class="nav-item">
@@ -127,11 +140,11 @@ In the jinja template the variable *root* can be accessed. This variable mirrors
         </li>
     {% endfor %}
 
-will render a menu item for every page in the top-level directory, i.e. .md file, which was added in the top-level *Pages.mk*. The page will only be included if the local config of the page does not contain a "nomenu" variable. 
+will render a menu item for every page in the top-level directory, i.e. .md file, which was added in the top-level *Pages.mk*. The page will only be included if the local config of the page does not contain a **nomenu** attribute. 
 
-Every page has the additional attribute *url*, which contains the relative url of the page from the top-level directory. As in the above example, the | localurl filter must be added to obtain a relative url which works for pages also in subdirectories. 
+Every page has the additional attribute **url**, which contains the relative url of the page from the top-level directory. As in the above example, the | localurl filter must be added to obtain a relative url which works for pages also in subdirectories. 
 
-The pages of subdirectories can be traversed by accessing the respective attributes of *root*. For instance
+The pages of subdirectories can be traversed by accessing the respective attributes of **root**. For instance
 
     {% for p in root.blog %}
 
@@ -168,4 +181,4 @@ The command
 
     make upload
 
-will upload all the generated html files and all requisites of the page, which are known to mkaestatic, to the server. Links in markdown code and links which are filtered with the *localurl* jinja filtered will be automatically included in the upload. 
+will upload all the generated html files and all requisites of the page, which are known to mkaestatic, to the server. Links in markdown code and links which are filtered with the *localurl* jinja will be automatically included in the upload. 
