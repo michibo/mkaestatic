@@ -2,7 +2,7 @@
 .SUFFIXES:
 .SUFFIXES:	.md .html .d .yml
 
-MD                =          python statico.py $< --configs "$(strip $(CONFIGS))" --site_config $(SITE_CONFIG) --default_layout $(DEFAULT_TEMPLATE)
+MD                =          python statico.py $< --configs "$(strip $(CONFIGS))" --site_config $(SITE_CONFIG)
 CONF              =          python configo.py $<
 
 SITE_CONFIG       := Site.yml

@@ -4,6 +4,7 @@ from codecs import open
 
 import os
 from os import path
+
 try:
     from urllib.parse import urlparse
 except ImportError:
@@ -43,7 +44,7 @@ def load_configs( config_fns, input_cfg_fn, input_root ):
 
     return cfg_tree, config
 
-def render(md_source, default_layout, site_cfg, config, cfg_tree, way_home, input_root):
+def render(input_fn, md_source, site_cfg, config, cfg_tree, way_home, input_root):
 
     hard_dependencies = []
     soft_dependencies = []
@@ -62,10 +63,12 @@ def render(md_source, default_layout, site_cfg, config, cfg_tree, way_home, inpu
         return html_code, soft_dependencies, hard_dependencies
 
 
-    if 'layout' in config:
-        layout = config['layout']
+    if 'template' in config:
+        layout = config['template']
+    elif 'template' in site_cfg:
+        layout = site_cfg['template']
     else:
-        layout = default_layout
+        raise ValueError("No template set in config of %s or in Site.yml" % input_fn)
 
     tpl_path, tpl_fname = path.split(layout)
 
@@ -116,7 +119,7 @@ def render(md_source, default_layout, site_cfg, config, cfg_tree, way_home, inpu
             src = url_parser(src)
             return super(MyRenderer, self).image(src, title, alt_text)
 
-    markdown = mistune.Markdown(renderer=MyRenderer(use_xhtml=True))
+    markdown = mistune.Markdown(renderer=MyRenderer(escape=True, use_xhtml=True))
     content = markdown(md_source)
 
     try:
@@ -136,7 +139,6 @@ def get_make_code(output_fn, input_dep_fn, soft_dependencies, hard_dependencies)
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('input')
-    parser.add_argument('--default_layout', type=str)
     parser.add_argument('--configs', type=str)
     parser.add_argument('--site_config', type=str)
     
@@ -164,7 +166,7 @@ def main():
 
     _, md_source = mdsplit(md_source)
 
-    rendered_source, soft_dependencies, hard_dependencies = render(md_source, args.default_layout, site_cfg, config, cfg_tree, way_home, input_root)
+    rendered_source, soft_dependencies, hard_dependencies = render(input_fn, md_source, site_cfg, config, cfg_tree, way_home, input_root)
     mk_src = get_make_code(output_html_fn, input_dep_fn, soft_dependencies, hard_dependencies)
 
     with open(output_html_fn, 'w', encoding='utf-8') as html_file:

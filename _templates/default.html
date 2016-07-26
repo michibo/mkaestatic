@@ -36,7 +36,7 @@
                 <ul class="nav-list">
                     {% for p in root if not p.nomenu %}
                     <li class="nav-item">
-                        <a class="pure-button" href="{{ p.url  | localurl | urlencode }}">{{ p.title|e }}</a>
+                        <a class="pure-button" href="{{ p.url  | localurl }}">{{ p.title|e }}</a>
                     </li>
                     {% endfor %}
                 </ul>
@@ -44,12 +44,11 @@
 
             <div class="pure-menu pure-menu-horizontal">
                 <ul class="pure-menu-list">
-                    <li class="pure-menu-item pure-menu-selected"><a href="{{ home }}" class="pure-menu-link">Home</a></li>
                     <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
                         <a href="#" id="menuLink1" class="pure-menu-link">Blog</a>
                         <ul class="pure-menu-children">
                             {% for p in root.blog %}
-                            <li class="pure-menu-item"><a href="{{ p.url  | localurl | urlencode }}" class="pure-menu-link">{{ p.title|e }}</a></li>
+                            <li class="pure-menu-item"><a href="{{ p.url  | localurl }}" class="pure-menu-link">{{ p.title|e }}</a></li>
                             {% endfor %}
                         </ul>
                     </li>
