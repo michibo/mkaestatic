@@ -44,7 +44,7 @@ def load_configs( config_fns, input_cfg_fn, input_root ):
 
     return cfg_tree, config
 
-def render(input_fn, md_source, site_cfg, config, cfg_tree, way_home, input_root):
+def render(input_fn, md_source, site_cfg, config, cfg_tree, input_root):
 
     hard_dependencies = []
     soft_dependencies = []
@@ -81,12 +81,11 @@ def render(input_fn, md_source, site_cfg, config, cfg_tree, way_home, input_root
         if res.path.startswith('/'):
             url = res.path.lstrip('/')
             soft_dependencies.append(url)
-            url = path.join( way_home, url )
+            url = path.relpath( url, input_root )
         else:
             soft_dependencies.append(path.join(input_root, res.path))
         
         return url
-
 
     class MyTemplateLoader(jinja2.FileSystemLoader):
         def __init__(self, path):
@@ -122,6 +121,8 @@ def render(input_fn, md_source, site_cfg, config, cfg_tree, way_home, input_root
     markdown = mistune.Markdown(renderer=MyRenderer(escape=True, use_xhtml=True))
     content = markdown(md_source)
 
+    way_home = path.relpath( os.curdir, input_root )
+
     try:
         html_code = template.render( content=content, site=site_cfg, page=config, root=cfg_tree, home=way_home )
     except jinja2.TemplateNotFound as e:
@@ -152,8 +153,6 @@ def main():
 
     input_root, _ = path.split( input_fn_base )
 
-    way_home = path.relpath( os.curdir, input_root )
-
     with open(args.site_config, 'r', encoding='utf-8') as site_cfg_file:
         site_cfg = yaml.load(site_cfg_file.read())
 
@@ -166,7 +165,7 @@ def main():
 
     _, md_source = mdsplit(md_source)
 
-    rendered_source, soft_dependencies, hard_dependencies = render(input_fn, md_source, site_cfg, config, cfg_tree, way_home, input_root)
+    rendered_source, soft_dependencies, hard_dependencies = render(input_fn, md_source, site_cfg, config, cfg_tree, input_root)
     mk_src = get_make_code(output_html_fn, input_dep_fn, soft_dependencies, hard_dependencies)
 
     with open(output_html_fn, 'w', encoding='utf-8') as html_file:
