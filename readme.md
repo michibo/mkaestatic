@@ -3,16 +3,16 @@
 
 *mkaestatic* is a **static** website generator which uses non-recursive [make](//www.gnu.org/software/make/), [python](//www.python.org/) and [markdown](//daringfireball.net/projects/markdown/). The non-recursive make approach is based Emile van Bergen's article [Implementing non-recursive make](//evbergen.home.xs4all.nl/nonrecursive-make.html) which is itself based on the paper [Recursive Make Considered Harmful](//aegis.sourceforge.net/auug97.pdf).
 
-Additionally, *mkaestatic* strictly uses relative URLs inside the generated static page. Therefore, the page can be accessed using the browser directly on the file system, i.e. using file:// instead of http://, without the need for a webserver. 
+Additionally, *mkaestatic* strictly uses relative URLs inside the generated static page. Therefore, the page can be accessed using the browser directly on the file system, i.e. using file:// instead of http://, without the need for a web server. 
 
-*mkaestatic* keeps track of requisites using the features of make. It can be easily integrated into other static content generation toolchains based on make as for instance image or pdf rendering scripts. 
+*mkaestatic* keeps track of requisites using the features of make. It can be easily integrated into other static content generation tool chains based on make as for instance image or PDF rendering scripts. 
 
 Features:
 
 -   Low-level easily extensible make based static website generator
 -   Purely relative URLs!
     -   Websites can be copied in bulk to arbitrary subdirectories of web servers (for instance ~user/ websites) without any modification in code.
-    -   Websites can be surfed locally or remotely without a http server. (File server is enough)
+    -   Websites can be surfed locally or remotely without a HTTP server. (File server is enough)
 -   Arbitrary deep subdirectories powered by non-recursive make.
 -   Fast build times even for large projects as changes and dependencies are managed by make.
 -   About 300 lines of python/make code. More a script than a program.
@@ -40,7 +40,7 @@ The filenames of the *page*-files can be added to one line of the *Pages.mk* fil
 
     PAGES_SRC_$(d):=$(d)index.md $(d)readme.md
 
-A page is a markdown file with a .md suffix, which will eventually be compiled to a html-file. A prefix **$(d)** needs to be added file name. This adds the name of the current directory before the path of *page* in accordance to non-recursive make practice. The line needs to be inserted into *Pages.mk* in the following place:
+A page is a markdown file with a .md suffix, which will eventually be compiled to a HTML-file. A prefix **$(d)** needs to be added filename. This adds the name of the current directory before the path of *page* in accordance to non-recursive make practice. The line needs to be inserted into *Pages.mk* in the following place:
 
     ... non recursive make stuff ...
     
@@ -88,7 +88,7 @@ The subdirectories can be added in arbitrary order. Each subdirectory needs to c
     include		$(dir)Pages.mk
     MKCONFIGS+=$(dir)Pages.mk
 
-where the folder *blog/* is replaced by the respective subdirectory. Note, that you need to include the *$(d)* again before the directory name. 
+where the folder *blog/* is replaced by the respective subdirectory. Note, that you need to include the **$(d)** again before the directory name. 
 
 In the subdirectory you can add additional *pages* or *subdirectories* recursively by modifying the *Pages.mk* files inside them appropriately.
 
@@ -187,7 +187,7 @@ will loop over all pages inside the *blog/* subdirectory. The subdirectory and t
 
 Every page has three special attributes which are set internally by *mkaestatic*: **name**, **url** and **title**. The attribute **name** is the basename of the filename of the md-file for the page. **url** is the URL which can be used to reference the page html-file. **title** is the same as **name** by default, but can be overwritten in the local configuration. 
 
-Optionally, the attribute **mirror** can be set in the local configuration of a page. **mirror** must be set to the file name of another page, whose content will be merely copied to the html of the page. This can be useful to deal with compatibility in respect to old url schemes.
+Optionally, the attribute **mirror** can be set in the local configuration of a page. **mirror** must be set to the filename of another page, whose content will be merely copied to the html of the page. This can be useful to deal with compatibility in respect to old url schemes.
 
 Let's say for example that *index.html* shall have the same content as *readme.html*:
 
