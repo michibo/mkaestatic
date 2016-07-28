@@ -1,4 +1,17 @@
 
+# This helper module is part of the mkaestatic program/
+# script collection. mkaestatic can be used for static 
+# website generation. 
+#
+# It implements a hybrid data structure between list and 
+# dictionary, which is convenient to represent directory 
+# structures.
+#
+# Author: Michael Borinsky
+# Github: https://github.com/michibo/mkaestatic
+# License: MIT
+# Copyright 2016
+
 from os import path
 from collections import defaultdict
 

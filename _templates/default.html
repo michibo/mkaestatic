@@ -5,9 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{{ site.description|e }}">
 
+    <!--   
+        This is an example template for the mkaestatic script collection
+        https://github.com/michibo/mkaestatic
+
+        This html/css layout is 
+        based on pure http://purecss.io/
+    -->
+
     <title>{% block title %}{{ site.name|e }} - {{ page.title|e }}{% endblock %}</title>
 
     <link rel="stylesheet" href="{{ '/static/css/pure-min.css' | localurl }}">
+
     <!--[if lte IE 8]>
         <link rel="stylesheet" href="{{ '/static/css/grids-responsive-old-ie-min.css' | localurl }}">
     <![endif]--> 
@@ -23,6 +32,12 @@
     <!--[if gt IE 8]><!-->
         <link rel="stylesheet" href="{{ '/static/css/style.css' | localurl }}">
     <!--<![endif]-->
+
+    {#  Make sure to include the | localurl filter for all requisits of the website such 
+        as css, javascript, font or image files! The URLs will be properly translated 
+        across subdirectories of the project and make manages the dependencies on those 
+        static files. #}
+
 </head>
 <body>
 <div id="layout" class="pure-g">

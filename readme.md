@@ -129,9 +129,15 @@ The global **template** attribute in *Site.yml* again has a special role as it c
 
 #### Accessing page configurations in jinja templates
 
+The most important variable which is passed from mkaestatic to the jinja template is the **content** variable. It contains the html-code which was rendered from the markdown input. Normally, you would want to include something like,
+
+    <div>{{ content }}</div>
+
+in the middle of your template for the markdown content to actually be rendered. 
+
 ##### Local and strictly global attributes
 
-The attributes can be accessed in the jinja template with the **page**, **site** or **root** variables. For instance, **page.title** or **page.date** will refer to the values given in the header of *index.md* when *index.html* is compiled.
+The set attributes can be accessed in the jinja template with the **page**, **site** or **root** variables. For instance, **page.title** or **page.date** will refer to the values given in the header of *index.md* when *index.html* is compiled.
 
 Your jinja template might contain the following line for the **title** tag side the html header:
 
@@ -156,7 +162,7 @@ In the jinja template the variable **root** can be accessed. This variable mirro
     {% endfor %}
 
 will render a menu item for every page in the top-level directory (i.e. .md file), which was added in the top-level *Pages.mk*. The page will only be included if the local config of the page does not contain a **nomenu** attribute, because of the 
-    
+
     if not p.nomenu 
 
 filter in the for-loop.
@@ -254,3 +260,9 @@ The command
 will upload all the generated html files and all requisites of the page, which are in the dependency tree of make, to the server. Links in markdown code and links which are filtered with the *localurl* jinja will be automatically included in the upload. 
 
 If some static file is missing maybe you missed a | localurl filter in some template or a leading slash for a 'absolute' path.
+
+#### Example
+
+If you cloned this directory, ran *make* and everything worked out you can 'surf' the example project. Just open any html file with a browser.
+
+[Blog post](/blog/post1.html)

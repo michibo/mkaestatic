@@ -74,7 +74,7 @@ BUILT_FOLDER:=built
 
 .PHONY:     build
 build:      targets
-	rm -r $(BUILT_FOLDER) && mkdir built && tar cf - $(FILES) | ( cd $(BUILT_FOLDER) && tar xf - )
+	rm -rf $(BUILT_FOLDER) && mkdir built && tar cf - $(FILES) | ( cd $(BUILT_FOLDER) && tar xf - )
 
 BUILT_TARFILE:=built.tar.gz
 

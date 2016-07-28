@@ -1,3 +1,16 @@
+
+# This python program is part of the mkaestatic program/
+# script collection. mkaestatic can be used for static 
+# website generation. 
+#
+# configo.py reads the header attributes of markdown files and 
+# writes them into make friendly auxillary files. 
+# 
+# Author: Michael Borinsky
+# Github: https://github.com/michibo/mkaestatic
+# License: MIT
+# Copyright 2016
+
 import argparse
 
 from codecs import open
