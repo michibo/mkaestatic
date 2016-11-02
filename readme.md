@@ -1,7 +1,7 @@
 
 ### What is it? (tl;dr)
 
-*mkaestatic* is a **static** website generator which uses non-recursive [make](//www.gnu.org/software/make/), [python](//www.python.org/) and [markdown](//daringfireball.net/projects/markdown/). The non-recursive make approach is based Emile van Bergen's article [Implementing non-recursive make](//evbergen.home.xs4all.nl/nonrecursive-make.html) which is itself based on the paper [Recursive Make Considered Harmful](//aegis.sourceforge.net/auug97.pdf).
+*mkaestatic* is a **static** website generator which uses non-recursive [make](//www.gnu.org/software/make/), [python](//www.python.org/), [markdown](//daringfireball.net/projects/markdown/) and jinja. The non-recursive make approach is based Emile van Bergen's article [Implementing non-recursive make](//evbergen.home.xs4all.nl/nonrecursive-make.html) which is itself based on the paper [Recursive Make Considered Harmful](//aegis.sourceforge.net/auug97.pdf). In princible, *mkaestatic* is just a script that ties the powerful tools (i.e. non-recursive make/markdown/jinja) together in the most transparent and lightweight way possible.
 
 Additionally, *mkaestatic* strictly uses relative URLs inside the generated static page. Therefore, the page can be accessed using the browser directly on the file system, i.e. using file:// instead of http://, without the need for a web server. 
 
@@ -10,6 +10,7 @@ Additionally, *mkaestatic* strictly uses relative URLs inside the generated stat
 Features:
 
 -   Low-level easily extensible make based static website generator
+-   Markdown content / Jinja templates
 -   Purely relative URLs!
     -   Websites can be copied in bulk to arbitrary subdirectories of web servers (for instance ~user/ websites) without any modification in code.
     -   Websites can be surfed locally or remotely without a HTTP server. (File server is enough)
