@@ -53,7 +53,7 @@ def load_configs( config_fns, input_cfg_fn, input_root ):
         html_fn = "/" + cfg_fn_base + ".html"
 
         with open(cfg_fn, 'r', encoding='utf-8') as cfg_file:
-            cfg = yaml.load(cfg_file.read())
+            cfg = yaml.load(cfg_file.read(), Loader=yaml.SafeLoader)
 
         # Add special attributes:
         cfg['url'] = html_fn
@@ -194,7 +194,7 @@ def main():
     input_root, _ = path.split( input_fn_base )
 
     with open(args.site_config, 'r', encoding='utf-8') as site_cfg_file:
-        site_cfg = yaml.load(site_cfg_file.read())
+        site_cfg = yaml.load(site_cfg_file.read(), Loader=yaml.SafeLoader)
 
     cfg_fns = args.configs.strip().split(' ')
 

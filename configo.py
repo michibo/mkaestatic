@@ -35,7 +35,7 @@ def main():
         md_source = md_file.read()
 
     cfg_src, _ =    mdsplit(md_source)
-    config =        yaml.load(cfg_src)
+    config =        yaml.load(cfg_src, Loader=yaml.SafeLoader)
     config_yaml =   yaml.dump(config)
 
     if path.exists( output_cfg_fn ):
