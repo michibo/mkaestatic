@@ -9,7 +9,7 @@
 # Author: Michael Borinsky
 # Github: https://github.com/michibo/mkaestatic
 # License: MIT
-# Copyright 2016
+# Copyright 2016-2022
 
 import argparse
 
