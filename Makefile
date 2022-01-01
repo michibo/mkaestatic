@@ -19,7 +19,7 @@
 # How to call statico.py and configo.py:
 
 MD                =          python3 statico.py $< --configs "$(strip $(CONFIGS))" --site_config $(SITE_CONFIG)
-CONF              =          python3 configo.py $<
+CONF              =          python3 statico.py $< --parse_yml
 
 SITE_CONFIG       := Site.yml
 

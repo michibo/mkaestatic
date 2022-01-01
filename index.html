@@ -1,108 +1,88 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        
+        
 
-    <!--   
-        This is an example template for the mkaestatic script collection
-        https://github.com/michibo/mkaestatic
+        <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, target-densityDpi=device-dpi" />
 
-        This html/css layout is 
-        based on pure http://purecss.io/
-    -->
+        
+        
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <meta name="keywords" content="" />
 
-    <title>mkaestatic - readme</title>
+        <title>mkaestatic - readme</title>
 
-    <link rel="stylesheet" href="static/css/pure-min.css">
+        
+        <link rel="stylesheet" href="static/style.css" />
 
-    <!--[if lte IE 8]>
-        <link rel="stylesheet" href="static/css/grids-responsive-old-ie-min.css">
-    <![endif]--> 
-      
-    <!--[if gt IE 8]><!-->
-        <link rel="stylesheet" href="static/css/grids-responsive-min.css">
-    <!--<![endif]-->
+        
+    </head>
 
-    <!--[if lte IE 8]>
-        <link rel="stylesheet" href="static/css/style-old-ie.css">
-    <![endif]-->
+    <body>
+      <div class="layout"><div>
+        <header>
+  
+          <span class="logo"><a href=../../../../..>mkaestatic</a></span>
+          
+          <input id="nav" type="checkbox">
+          <label for="nav"></label>
+          
+          <nav>
+            <ul>
+              
+                
+              
+                
+                  <li><a href="readme.html">readme</a></li>
+                
+              
+            </ul>
+          </nav> 
+          
+        </header>
 
-    <!--[if gt IE 8]><!-->
-        <link rel="stylesheet" href="static/css/style.css">
-    <!--<![endif]-->
-
-    
-
-</head>
-<body>
-<div id="layout" class="pure-g">
-
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-        <div class="header">
-            <h1 class="brand-title">mkaestatic</h1>
-            <h2 class="brand-tagline">is awesome</h2>
-
-            <nav class="nav">
-                <ul class="nav-list">
-                    
-                    <li class="nav-item">
-                        <a class="pure-button" href="readme.html">readme</a>
-                    </li>
-                    
-                </ul>
-            </nav>
-
-            <div class="pure-menu pure-menu-horizontal">
-                <ul class="pure-menu-list">
-                    <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
-                        <a href="#" id="menuLink1" class="pure-menu-link">Blog</a>
-                        <ul class="pure-menu-children">
-                            
-                            <li class="pure-menu-item"><a href="blog/post1.html" class="pure-menu-link">My first blog post</a></li>
-                            
-                            <li class="pure-menu-item"><a href="blog/post2.html" class="pure-menu-link">My second blog post</a></li>
-                            
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="content pure-u-1 pure-u-md-3-4">
-        <div>
-            
-            <h1 class="content-subhead">readme</h1>
-            <h3>What is it? (tl;dr)</h3>
-<p><em>mkaestatic</em> is a <strong>static</strong> website generator which uses non-recursive <a href="//www.gnu.org/software/make/">make</a>, <a href="//www.python.org/">python</a>, <a href="//daringfireball.net/projects/markdown/">markdown</a> and jinja. The non-recursive make approach is based Emile van Bergen's article <a href="//evbergen.home.xs4all.nl/nonrecursive-make.html">Implementing non-recursive make</a> which is itself based on the paper <a href="//aegis.sourceforge.net/auug97.pdf">Recursive Make Considered Harmful</a>. In princible, <em>mkaestatic</em> is just a script that ties the powerful tools (i.e. non-recursive make/markdown/jinja) together in the most transparent and lightweight way possible.</p>
-<p>Additionally, <em>mkaestatic</em> strictly uses relative URLs inside the generated static page. Therefore, the page can be accessed using the browser directly on the file system, i.e. using file:// instead of http://, without the need for a web server.</p>
-<p><em>mkaestatic</em> keeps track of requisites using the features of make. It can be easily integrated into other static content generation tool chains based on make as for instance image or PDF rendering scripts.</p>
-<p>Features:</p>
+        <div class="content">
+        
+          <h1 class="content-subhead">readme</h1>
+          <h3>What is it?</h3>
+<p><em>mkaestatic</em> is a simple static website generator. It combines the standard tools <a href="//www.gnu.org/software/make/">make</a>, <a href="//www.python.org/">python</a>, <a href="//daringfireball.net/projects/markdown/">markdown</a> and <a href="https://palletsprojects.com/p/jinja/">jinja2</a>.</p>
+<h3>Cool Features</h3>
 <ul>
-<li>Low-level easily extensible make based static website generator</li>
-<li>Markdown content / Jinja templates</li>
-<li>Purely relative URLs!<ul>
+<li>Easily extensible make based static website generator</li>
+<li>Markdown content / Jinja2 templates</li>
+<li>Purely relative URLs<ul>
 <li>Websites can be copied in bulk to arbitrary subdirectories of web servers (for instance ~user/ websites) without any modification in code.</li>
 <li>Websites can be surfed locally or remotely without a HTTP server. (File server is enough)</li>
+<li>Websites can just be a git repository hosted for instance via github pages</li>
 </ul>
 </li>
-<li>Arbitrary deep subdirectories powered by non-recursive make.</li>
-<li>Fast build times even for large projects as changes and dependencies are managed by make.</li>
-<li>About 300 lines of python/make code. More a script than a program.</li>
+<li>Arbitrary deep subdirectories</li>
+<li>Fast build times even for large projects as changes and dependencies are managed by make</li>
+<li>Keeps track of requisites using make</li>
+<li>Can be easily integrated with other content generating tools via make</li>
+<li>About 300 lines of python/make code</li>
 </ul>
+<h3>Under The Hood</h3>
+<p>The non-recursive make approach is based Emile van Bergen's article <a href="//evbergen.home.xs4all.nl/nonrecursive-make.html">Implementing non-recursive make</a> which is itself based on the paper <a href="//aegis.sourceforge.net/auug97.pdf">Recursive Make Considered Harmful</a>. <em>mkaestatic</em> strictly uses relative URLs inside the generated static page. Therefore, the page can be accessed using the browser directly on the file system, i.e. using file:// instead of http://, without the need for a web server.</p>
 <h3>Requirements</h3>
 <p>To run <em>mkaestatic</em> a</p>
 <ul>
-<li>python (2.7 or 3.x) installation is required. <em>mkaestatic</em> additionally uses</li>
+<li>python (3.x) installation is required. <em>mkaestatic</em> additionally uses</li>
 <li><a href="//github.com/lepture/mistune">mistune</a> as its markdown implementation,</li>
 <li><a href="//jinja.pocoo.org/docs/dev/">jinja2</a> as a template engine and</li>
 <li><a href="//pyyaml.org/">PyYAML</a> to read and write config files.</li>
 </ul>
+<p>The extra python packages can be installed for instance with <em>pip</em></p>
+<pre><code>pip install mistune jinja2 pyyaml
+
+</code></pre>
 <h3>Quickstart</h3>
 <h4>Preparation</h4>
+<p>Either clone, fork or template the <a href="https://github.com/michibo/mkaestatic">repository</a> on github or</p>
 <ul>
 <li>Copy the <em>Makefile</em>, <em>statico.py</em>, <em>configo.py</em> into your project folder.</li>
 <li>Create two config files: <em>Pages.mk</em> and <em>Site.mk</em></li>
@@ -294,18 +274,20 @@ SSH_FOLDER := public_html
 <p>If you cloned this directory, ran <em>make</em> and everything worked out you can 'surf' the example project. Just open any html file with a browser.</p>
 <p><a href="blog/post1.html">Blog post</a></p>
 
-            
-
-            <div class="footer">
-                <div class="pure-menu pure-menu-horizontal">
-                    <ul>
-                        <li class="pure-menu-item"><a href="https://github.com/michibo/mkaestatic" class="pure-menu-link">GitHub</a></li>
-                    </ul>
-                </div>
-            </div>
+        
         </div>
-    </div>
-</div>
-<script type="text/javascript" src="static/js/menus.js"></script>
-</body>
+
+        <div>
+          We can also have a menu of blog entries which is generated in the template:
+          <ul>
+            
+            
+            <li><a href="blog/post1.html">My first blog post</a></li>
+            
+            <li><a href="blog/post2.html">My second blog post</a></li>
+            
+          </ul>
+        </div>
+    </div></div>
+    </body>
 </html>

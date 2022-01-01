@@ -28,10 +28,58 @@ try:
 except ImportError:
     from urlparse import urlparse
 
+import re
 import yaml, jinja2, mistune
 
-from mdsplit import mdsplit
 from dirlisttree import dirlisttree
+from collections import defaultdict
+
+def mdsplit( md_source ):
+    m = re.match( r"\s*(?:^---\s*$|)(.*?)\s*^---\s*$(.*)", md_source, re.DOTALL | re.MULTILINE )
+
+    if m:
+        return  m.group(1), m.group(2)
+    else:
+        return "{}", md_source
+
+
+# 
+class dirlisttree(defaultdict):
+    ''' This dictionary class mimics a directory structure in a way compatible to jinja2:
+    '''
+
+    def __init__(self):
+        def ddict():
+            return dirlisttree()
+
+        self.files = []
+
+        super(dirlisttree, self).__init__(ddict)
+
+    def __iter__(self):
+        return iter(self.files)
+
+    def next(self):
+        pass
+
+    __next__ = next
+
+    def __getitem__(self, pure_path):
+        if pure_path == "":
+            return self
+
+        head, tail = path.split( pure_path )
+        if head == "":
+            return super(dirlisttree, self).__getitem__(tail)
+
+        return self[head][tail]
+
+    def __str__(self):
+        return "%s; %s" % (", ".join( "%s" % fn for fn in self.files ),
+               ", ".join( "%s : %s" % (key,val) for key,val in self.iteritems() ))
+
+    def append(self, content):
+        self.files.append(content)
 
 def load_configs( config_fns, input_cfg_fn, input_root ):
     ''' This function loads the configuration files 
@@ -86,12 +134,15 @@ def get_url_transform( input_root, soft_dep ):
 
         if res.path.startswith('/'):
             url = res.path.lstrip('/')
-            soft_dep.append(url)
-            url = path.relpath( url, input_root )
+            if url:
+              soft_dep.append(url)
+              return path.relpath( url, input_root )
+            else:
+              return path.relpath( '/', input_root )
         else:
             soft_dep.append(path.join(input_root, res.path))
         
-        return url
+            return url
 
     return url_transform
 
@@ -207,58 +258,90 @@ def write_dep_file(output_fn, input_dep_fn, soft_dependencies, hard_dependencies
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('input')
+    parser.add_argument('--parse_yml', dest='parse_yml', action='store_true')
     parser.add_argument('--configs', type=str)
     parser.add_argument('--site_config', type=str)
     
     args = parser.parse_args()
     input_fn = args.input
 
-    input_fn_base, _ = path.splitext( input_fn )
-    output_html_fn = input_fn_base + ".html"
-    input_cfg_fn = input_fn_base + ".yml"
-    input_dep_fn = input_fn_base + ".d"
+    input_fn_base, ext = path.splitext( input_fn )
 
-    input_root, _ = path.split( input_fn_base )
+    if ext != '.md':
+        raise RuntimeError('Input file must have a .md extension.')
 
-    with open(args.site_config, 'r', encoding='utf-8') as site_cfg_file:
-        site_cfg = yaml.load(site_cfg_file.read(), Loader=yaml.SafeLoader)
+    # Only generate configuration .yml files in the first pass
+    if args.parse_yml:
+        output_cfg_fn = input_fn_base + ".yml"
 
-    cfg_fns = args.configs.strip().split(' ')
-
-    cfg_tree, config = load_configs( cfg_fns, input_cfg_fn, input_root )
-
-    if 'mirror' in config:
-        # Special mirror keyword:
-        mirror_fn = config['mirror']
-        
-        try:
-            with open(mirror_fn, 'r', encoding='utf-8') as mirror_file:
-                rendered_source= mirror_file.read()
-        except FileNotFound as e:
-            rendered_source= "Mirror file not found: %s" % str(e)
-
-        soft_dependencies = []
-        hard_dependencies = [mirror_fn]
-    else:
-        # Render page normaly from source:
-        if 'template' in config:
-            template_fn = config['template']
-        elif 'template' in site_cfg:
-            template_fn = site_cfg['template']
-        else:
-            raise ValueError("No template set in config of %s or in Site.yml" % input_fn)
-
-        with open(input_fn, 'r', encoding='utf-8') as md_file:
+        with open(args.input, 'r', encoding='utf-8') as md_file:
             md_source = md_file.read()
 
-        _, md_source = mdsplit(md_source)
+        cfg_src, _ =    mdsplit(md_source)
+        config =        yaml.load(cfg_src, Loader=yaml.SafeLoader)
+        config_yaml =   yaml.dump(config)
 
-        rendered_source, soft_dependencies, hard_dependencies = render(md_source, template_fn, site_cfg, config, cfg_tree, input_root)
+        if path.exists( output_cfg_fn ):
+            with open(output_cfg_fn, 'r', encoding='utf-8') as yml_file_ro:
+                if yml_file_ro.read() != config_yaml:
+                    overwrite = True
+                else:
+                    overwrite = False
+        else:
+            overwrite = True
 
-    with open(output_html_fn, 'w', encoding='utf-8') as html_file:
-        html_file.write(rendered_source)
+        if overwrite:
+            with open(output_cfg_fn, 'w', encoding='utf-8') as yml_file:
+                yml_file.write(config_yaml)
 
-    write_dep_file(output_html_fn, input_dep_fn, soft_dependencies, hard_dependencies)
+    else:
+    # Second pass that generates the html and the .d files
+
+        output_html_fn = input_fn_base + ".html"
+        input_cfg_fn = input_fn_base + ".yml"
+        input_dep_fn = input_fn_base + ".d"
+
+        input_root, _ = path.split( input_fn_base )
+
+        with open(args.site_config, 'r', encoding='utf-8') as site_cfg_file:
+            site_cfg = yaml.load(site_cfg_file.read(), Loader=yaml.SafeLoader)
+
+        cfg_fns = args.configs.strip().split(' ')
+
+        cfg_tree, config = load_configs( cfg_fns, input_cfg_fn, input_root )
+
+        if 'mirror' in config:
+            # Special mirror keyword:
+            mirror_fn = config['mirror']
+            
+            try:
+                with open(mirror_fn, 'r', encoding='utf-8') as mirror_file:
+                    rendered_source= mirror_file.read()
+            except FileNotFound as e:
+                rendered_source= "Mirror file not found: %s" % str(e)
+
+            soft_dependencies = []
+            hard_dependencies = [mirror_fn]
+        else:
+            # Render page normaly from source:
+            if 'template' in config:
+                template_fn = config['template']
+            elif 'template' in site_cfg:
+                template_fn = site_cfg['template']
+            else:
+                raise ValueError("No template set in config of %s or in Site.yml" % input_fn)
+
+            with open(input_fn, 'r', encoding='utf-8') as md_file:
+                md_source = md_file.read()
+
+            _, md_source = mdsplit(md_source)
+
+            rendered_source, soft_dependencies, hard_dependencies = render(md_source, template_fn, site_cfg, config, cfg_tree, input_root)
+
+        with open(output_html_fn, 'w', encoding='utf-8') as html_file:
+            html_file.write(rendered_source)
+
+        write_dep_file(output_html_fn, input_dep_fn, soft_dependencies, hard_dependencies)
     
 if __name__ == "__main__":
     main()

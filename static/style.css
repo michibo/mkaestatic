@@ -1,0 +1,132 @@
+html    {
+    overflow-y: scroll;
+    font-family: 'Helvetia', sans-serif;
+}
+hr {
+    border: 0;
+    height: 0;
+    margin-top: 5ex;
+    margin-bottom: 5ex;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+.layout > div {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left:1em;
+    padding-right:1em;
+}
+
+.header {
+    height:2.7em;
+}
+.nav > ul > li {
+    list-style:none;
+    display: inline;
+}
+.nav > ul > li > span {
+    padding-left:1em;
+}
+a {
+    text-decoration: none;
+    color: rgb(61, 146, 201);
+}
+a:hover,
+a:focus {
+    text-decoration: underline;
+}
+.left {float:left}
+.right {float:right}
+.clear {clear:both}
+
+header {
+  overflow: hidden;
+  background: #fff;
+}
+
+header a, header label {
+  display: block;
+  color: #000;
+  text-decoration: none;
+  line-height: 20px;
+}
+
+header a:hover, header label:hover { color: #aaa; }
+
+header label {
+  float: right;
+  padding: 18px 20px;
+  cursor: pointer;
+}
+
+header label:after {
+  content: "\2261";
+  font-size: 1.8em;
+}
+
+.logo {
+  padding: 20px 0;
+  float: left;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+  
+nav {
+  float: right;
+  max-height: 0;
+  width: 100%;
+  -webkit-transition: max-height 0.3s; 
+     -moz-transition: max-height 0.3s;
+       -o-transition: max-height 0.3s;
+          transition: max-height 0.3s;
+}
+
+nav ul {
+  margin: 0;
+  padding: 0;
+   padding-bottom: 10px;
+}
+  
+nav li {
+  display: block;
+  text-align: center;
+}
+  
+nav a {
+  padding: 10px;
+  width: 100%;
+}
+
+#nav { display: none; }
+
+#nav:checked ~ nav {
+  max-height: 200px; /* This can be anything bigger than your nav height. The transition duration works with this */
+}
+
+@media only screen and (min-width: 700px) {
+  
+  header label { display: none; }
+  
+  nav {
+    width: auto;
+    max-height: none;
+  }
+  
+  nav ul {
+    padding: 0;
+    padding-right: 10px;
+  }
+  
+  nav li {
+    display: inline-block;
+    text-align: left;
+  }
+  
+  header nav a {
+    display: inline-block;
+    padding: 20px 10px;
+    width: auto;
+  }
+  
+}
+

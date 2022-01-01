@@ -1,34 +1,43 @@
 
-### What is it? (tl;dr)
+### What is it?
 
-*mkaestatic* is a **static** website generator which uses non-recursive [make](//www.gnu.org/software/make/), [python](//www.python.org/), [markdown](//daringfireball.net/projects/markdown/) and jinja. The non-recursive make approach is based Emile van Bergen's article [Implementing non-recursive make](//evbergen.home.xs4all.nl/nonrecursive-make.html) which is itself based on the paper [Recursive Make Considered Harmful](//aegis.sourceforge.net/auug97.pdf). In princible, *mkaestatic* is just a script that ties the powerful tools (i.e. non-recursive make/markdown/jinja) together in the most transparent and lightweight way possible.
+*mkaestatic* is a simple static website generator. It combines the standard tools [make](//www.gnu.org/software/make/), [python](//www.python.org/), [markdown](//daringfireball.net/projects/markdown/) and [jinja2](https://palletsprojects.com/p/jinja/).
 
-Additionally, *mkaestatic* strictly uses relative URLs inside the generated static page. Therefore, the page can be accessed using the browser directly on the file system, i.e. using file:// instead of http://, without the need for a web server. 
+### Cool Features
 
-*mkaestatic* keeps track of requisites using the features of make. It can be easily integrated into other static content generation tool chains based on make as for instance image or PDF rendering scripts. 
-
-Features:
-
--   Low-level easily extensible make based static website generator
--   Markdown content / Jinja templates
--   Purely relative URLs!
+-   Easily extensible make based static website generator
+-   Markdown content / Jinja2 templates
+-   Purely relative URLs
     -   Websites can be copied in bulk to arbitrary subdirectories of web servers (for instance ~user/ websites) without any modification in code.
     -   Websites can be surfed locally or remotely without a HTTP server. (File server is enough)
--   Arbitrary deep subdirectories powered by non-recursive make.
--   Fast build times even for large projects as changes and dependencies are managed by make.
--   About 300 lines of python/make code. More a script than a program.
+    -   Websites can just be a git repository hosted for instance via github pages
+-   Arbitrary deep subdirectories
+-   Fast build times even for large projects as changes and dependencies are managed by make
+-   Keeps track of requisites using make
+-   Can be easily integrated with other content generating tools via make
+-   About 300 lines of python/make code
+
+### Under The Hood
+
+The non-recursive make approach is based Emile van Bergen's article [Implementing non-recursive make](//evbergen.home.xs4all.nl/nonrecursive-make.html) which is itself based on the paper [Recursive Make Considered Harmful](//aegis.sourceforge.net/auug97.pdf). *mkaestatic* strictly uses relative URLs inside the generated static page. Therefore, the page can be accessed using the browser directly on the file system, i.e. using file:// instead of http://, without the need for a web server. 
 
 ### Requirements
 
 To run *mkaestatic* a 
-- python (2.7 or 3.x) installation is required. *mkaestatic* additionally uses 
+- python (3.x) installation is required. *mkaestatic* additionally uses 
 - [mistune](//github.com/lepture/mistune) as its markdown implementation, 
 - [jinja2](//jinja.pocoo.org/docs/dev/) as a template engine and 
 - [PyYAML](//pyyaml.org/) to read and write config files. 
 
+The extra python packages can be installed for instance with *pip*
+
+    pip install mistune jinja2 pyyaml
+
 ### Quickstart
 
 #### Preparation
+
+Either clone, fork or template the [repository](https://github.com/michibo/mkaestatic) on github or 
 
 - Copy the *Makefile*, *statico.py*, *configo.py* into your project folder.
 - Create two config files: *Pages.mk* and *Site.mk*

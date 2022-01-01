@@ -1,95 +1,64 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{{ site.description|e }}">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        {% block head %}
+        {# Usual header stuff #}
 
-    <!--   
-        This is an example template for the mkaestatic script collection
-        https://github.com/michibo/mkaestatic
+        <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, target-densityDpi=device-dpi" />
 
-        This html/css layout is 
-        based on pure http://purecss.io/
-    -->
+        {# Meta data is taken from Site.yml: #}
+        {# The content of Site.yml can be accessed via site.x #}
+        <meta name="description" content="{{ site.description|e }}" />
+        <meta name="author" content="{{ site.author|e }}" />
+        <meta name="keywords" content="{{ site.keywords|e }}" />
 
-    <title>{% block title %}{{ site.name|e }} - {{ page.title|e }}{% endblock %}</title>
+        <title>{% block title %}{{ site.name }} - {{ page.title|e }}{% endblock %}</title>
 
-    <link rel="stylesheet" href="{{ '/static/css/pure-min.css' | localurl }}">
+        {# The relative url '/static/style.css' is properly encoded using the local url filter #}
+        <link rel="stylesheet" href="{{ '/static/style.css' | localurl }}" />
 
-    <!--[if lte IE 8]>
-        <link rel="stylesheet" href="{{ '/static/css/grids-responsive-old-ie-min.css' | localurl }}">
-    <![endif]--> 
-      
-    <!--[if gt IE 8]><!-->
-        <link rel="stylesheet" href="{{ '/static/css/grids-responsive-min.css' | localurl }}">
-    <!--<![endif]-->
+        {% endblock head %}
+    </head>
 
-    <!--[if lte IE 8]>
-        <link rel="stylesheet" href="{{ '/static/css/style-old-ie.css' | localurl }}">
-    <![endif]-->
+    <body>
+      <div class="layout"><div>
+        <header>
+  
+          <span class="logo"><a href={{ '/' | localurl }}>{{ site.name|e }}</a></span>
+          
+          <input id="nav" type="checkbox">
+          <label for="nav"></label>
+          
+          <nav>
+            <ul>
+              {% for p in root %}
+                {% if not p.nomenu %}
+                  <li><a href="{{ p.url  | localurl }}">{{ p.title|e }}</a></li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </nav> 
+          
+        </header>
 
-    <!--[if gt IE 8]><!-->
-        <link rel="stylesheet" href="{{ '/static/css/style.css' | localurl }}">
-    <!--<![endif]-->
-
-    {#  Make sure to include the | localurl filter for all requisits of the website such 
-        as css, javascript, font or image files! The URLs will be properly translated 
-        across subdirectories of the project and make manages the dependencies on those 
-        static files. #}
-
-</head>
-<body>
-<div id="layout" class="pure-g">
-
-    <div class="sidebar pure-u-1 pure-u-md-1-4">
-        <div class="header">
-            <h1 class="brand-title">{{ site.name|e }}</h1>
-            <h2 class="brand-tagline">{{ site.tagline|e }}</h2>
-
-            <nav class="nav">
-                <ul class="nav-list">
-                    {% for p in root if not p.nomenu %}
-                    <li class="nav-item">
-                        <a class="pure-button" href="{{ p.url  | localurl }}">{{ p.title|e }}</a>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </nav>
-
-            <div class="pure-menu pure-menu-horizontal">
-                <ul class="pure-menu-list">
-                    <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
-                        <a href="#" id="menuLink1" class="pure-menu-link">Blog</a>
-                        <ul class="pure-menu-children">
-                            {% for p in root.blog %}
-                            <li class="pure-menu-item"><a href="{{ p.url  | localurl }}" class="pure-menu-link">{{ p.title|e }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-
+        <div class="content">
+        {% block content %}
+          <h1 class="content-subhead">{{ page.title|e }}</h1>
+          {{ content }}
+        {% endblock %}
         </div>
-    </div>
 
-    <div class="content pure-u-1 pure-u-md-3-4">
         <div>
-            {% block content %}
-            <h1 class="content-subhead">{{ page.title|e }}</h1>
-            {{ content }}
-            {% endblock %}
-
-            <div class="footer">
-                <div class="pure-menu pure-menu-horizontal">
-                    <ul>
-                        <li class="pure-menu-item"><a href="https://github.com/michibo/mkaestatic" class="pure-menu-link">GitHub</a></li>
-                    </ul>
-                </div>
-            </div>
+          We can also have a menu of blog entries which is generated in the template:
+          <ul>
+            {# Directories can also be accessed in the templates. Via root.x all the pages in the root directory can be accessed. Looping over the root.blog directory gives all pages in the ./blog folder #}
+            {% for p in root.blog %}
+            <li><a href="{{ p.url  | localurl }}">{{ p.title|e }}</a></li>
+            {% endfor %}
+          </ul>
         </div>
-    </div>
-</div>
-<script type="text/javascript" src="{{ '/static/js/menus.js' | localurl }}"></script>
-</body>
+    </div></div>
+    </body>
 </html>
