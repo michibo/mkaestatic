@@ -3,6 +3,8 @@
 
 *mkaestatic* is a simple static website generator. It combines the standard tools [make](//www.gnu.org/software/make/), [python](//www.python.org/), [markdown](//daringfireball.net/projects/markdown/) and [jinja2](https://palletsprojects.com/p/jinja/).
 
+As most static website generators *mkaestatic* works by taking a bunch of markdown files e.g. *readme.md*, *about.md* and *contact.md* and converts them into html files *readme.html*, *about.html* and *contact.html*. It does so by using one or more jinja2 html files that encode the layout of the generated files. The markdown to html conversation can be controlled using a couple of configuration files and options that are integrated in the markdown files.
+
 ### Cool Features
 
 -   Easily extensible make based static website generator
@@ -32,15 +34,15 @@ To run *mkaestatic* a
 The extra python packages can be installed for instance with *pip*
 
     pip install mistune jinja2 pyyaml
-
 ### Quickstart
 
 #### Preparation
 
-Either clone, fork or template the [repository](https://github.com/michibo/mkaestatic) on github or 
+Either clone, fork or template the [repository](https://github.com/michibo/mkaestatic) on github or copy the 
 
-- Copy the *Makefile*, *statico.py*, *configo.py* into your project folder.
-- Create two config files: *Pages.mk* and *Site.mk*
+- code files *Makefile* and *mkaestatic.py*
+- and the two configuration files *Pages.mk* and *Site.mk*
+- optionally create subdirectories. Each subdirectory must have another *Pages.mk* config file (see the example in the *blog* folder)
 
 #### Setup your pages
 
@@ -49,7 +51,6 @@ In *Pages.mk* the *pages* and *subdirectories* of the root directory can be conf
 The filenames of the *page*-files can be added to one line of the *Pages.mk* file. The make variable *PAGES_SRC_$(d)* must be set to the list of *pages*:
 
     PAGES_SRC_$(d):=$(d)index.md $(d)readme.md
-
 A page is a markdown file with a .md suffix, which will eventually be compiled to a HTML-file. A prefix **$(d)** needs to be added filename. This adds the name of the current directory before the path of *page* in accordance to non-recursive make practice. The line needs to be inserted into *Pages.mk* in the following place:
 
     ... non recursive make stuff ...

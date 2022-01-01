@@ -47,7 +47,11 @@ MKCONFIGS+=$(dir)Pages.mk
 # Add the pages for the current directory here:
 # (pages are just .md files)
 
-PAGES_SRC_$(d):=$(d)index.md $(d)readme.md
+# By default all md files are included:
+PAGES_SRC_$(d):=$(wildcard $(d)*.md)
+
+# You can also restrict to specific ones:
+#PAGES_SRC_$(d):=$(d)readme.md $(d)index.md
 
 # Include the $(d) for reference to the local directory.
 # This is the famous non-recursive-make trick. 

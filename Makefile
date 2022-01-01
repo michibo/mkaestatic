@@ -18,10 +18,13 @@
 
 # How to call statico.py and configo.py:
 
-MD                =          python3 statico.py $< --configs "$(strip $(CONFIGS))" --site_config $(SITE_CONFIG)
-CONF              =          python3 statico.py $< --parse_yml
+MD                =          python3 mkaestatic.py $< --configs "$(strip $(CONFIGS))" --site_config $(SITE_CONFIG)
+CONF              =          python3 mkaestatic.py $< --parse_yml
 
-SITE_CONFIG       := Site.yml
+# Optionally setup ssh server with user to push static website to:
+SSH_SERVER := me@myserver.com
+SSH_FOLDER := public_html
+
 
 # Start with empty page/dependency lists:
 PAGES:=
@@ -91,3 +94,4 @@ clean:
 	rm -f $(CLEAN) && rm -rf $(BUILT_FOLDER) && rm -f $(BUILT_TARFILE)
 
 .SECONDARY:	$(CLEAN)
+

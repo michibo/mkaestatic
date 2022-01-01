@@ -35,6 +35,14 @@
             <ul>
               
                 
+                  <li><a href="contact.html">contact</a></li>
+                
+              
+                
+                  <li><a href="example.html">example</a></li>
+                
+              
+                
               
                 
                   <li><a href="readme.html">readme</a></li>
@@ -50,6 +58,7 @@
           <h1 class="content-subhead">readme</h1>
           <h3>What is it?</h3>
 <p><em>mkaestatic</em> is a simple static website generator. It combines the standard tools <a href="//www.gnu.org/software/make/">make</a>, <a href="//www.python.org/">python</a>, <a href="//daringfireball.net/projects/markdown/">markdown</a> and <a href="https://palletsprojects.com/p/jinja/">jinja2</a>.</p>
+<p>As most static website generators <em>mkaestatic</em> works by taking a bunch of markdown files e.g. <em>readme.md</em>, <em>about.md</em> and <em>contact.md</em> and converts them into html files <em>readme.html</em>, <em>about.html</em> and <em>contact.html</em>. It does so by using one or more jinja2 html files that encode the layout of the generated files. The markdown to html conversation can be controlled using a couple of configuration files and options that are integrated in the markdown files.</p>
 <h3>Cool Features</h3>
 <ul>
 <li>Easily extensible make based static website generator</li>
@@ -78,20 +87,19 @@
 </ul>
 <p>The extra python packages can be installed for instance with <em>pip</em></p>
 <pre><code>pip install mistune jinja2 pyyaml
-
 </code></pre>
 <h3>Quickstart</h3>
 <h4>Preparation</h4>
-<p>Either clone, fork or template the <a href="https://github.com/michibo/mkaestatic">repository</a> on github or</p>
+<p>Either clone, fork or template the <a href="https://github.com/michibo/mkaestatic">repository</a> on github or copy the</p>
 <ul>
-<li>Copy the <em>Makefile</em>, <em>statico.py</em>, <em>configo.py</em> into your project folder.</li>
-<li>Create two config files: <em>Pages.mk</em> and <em>Site.mk</em></li>
+<li>code files <em>Makefile</em> and <em>mkaestatic.py</em></li>
+<li>and the two configuration files <em>Pages.mk</em> and <em>Site.mk</em></li>
+<li>optionally create subdirectories. Each subdirectory must have another <em>Pages.mk</em> config file (see the example in the <em>blog</em> folder)</li>
 </ul>
 <h4>Setup your pages</h4>
 <p>In <em>Pages.mk</em> the <em>pages</em> and <em>subdirectories</em> of the root directory can be configured. The file is quite long, but most of it is just recursive make management.</p>
 <p>The filenames of the <em>page</em>-files can be added to one line of the <em>Pages.mk</em> file. The make variable <em>PAGES_SRC_$(d)</em> must be set to the list of <em>pages</em>:</p>
 <pre><code>PAGES_SRC_$(d):=$(d)index.md $(d)readme.md
-
 </code></pre>
 <p>A page is a markdown file with a .md suffix, which will eventually be compiled to a HTML-file. A prefix <strong>$(d)</strong> needs to be added filename. This adds the name of the current directory before the path of <em>page</em> in accordance to non-recursive make practice. The line needs to be inserted into <em>Pages.mk</em> in the following place:</p>
 <pre><code>... non recursive make stuff ...
@@ -278,6 +286,7 @@ SSH_FOLDER := public_html
         </div>
 
         <div>
+          <h1>Footer</h1>
           We can also have a menu of blog entries which is generated in the template:
           <ul>
             

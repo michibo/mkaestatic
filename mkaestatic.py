@@ -31,7 +31,6 @@ except ImportError:
 import re
 import yaml, jinja2, mistune
 
-from dirlisttree import dirlisttree
 from collections import defaultdict
 
 def mdsplit( md_source ):
@@ -198,7 +197,7 @@ def get_markdown_renderer( url_transform ):
 
             def image(self, src, alt_text, title):
                 src = url_transform(src)
-                return super(MyRenderer, self).image(src, title, alt_text)
+                return super(MyRenderer, self).image(src, alt_text, title)
                 
         return mistune.create_markdown(renderer=MyRenderer())
 
@@ -225,7 +224,7 @@ def render( md_source, template_fn, site_cfg, config, cfg_tree, input_root ):
         try:
             with open(mirror_fn, 'r', encoding='utf-8') as mirror_file:
                 html_code= mirror_file.read()
-        except FileNotFound as e:
+        except FileNotFoundError as e:
             html_code= "Mirror file not found: %s" % str(e)
 
         return html_code, soft_dependencies, hard_dependencies
@@ -317,7 +316,7 @@ def main():
             try:
                 with open(mirror_fn, 'r', encoding='utf-8') as mirror_file:
                     rendered_source= mirror_file.read()
-            except FileNotFound as e:
+            except FileNotFoundError as e:
                 rendered_source= "Mirror file not found: %s" % str(e)
 
             soft_dependencies = []
