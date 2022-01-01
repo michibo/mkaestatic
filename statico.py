@@ -143,13 +143,13 @@ def get_markdown_renderer( url_transform ):
         class MyRenderer( mistune.HTMLRenderer ):
             def link(self, link, text, title):
                 link = url_transform(link)
-                return super(MyRenderer, self).link(link, title, text)
+                return super(MyRenderer, self).link(link, text, title)
 
             def image(self, src, alt_text, title):
                 src = url_transform(src)
                 return super(MyRenderer, self).image(src, title, alt_text)
-
-        return mistune.create_markdown(renderer=MyRenderer(), escape=True)
+                
+        return mistune.create_markdown(renderer=MyRenderer())
 
 def render( md_source, template_fn, site_cfg, config, cfg_tree, input_root ):
     ''' This function renders the markdown source to html code. 
@@ -165,6 +165,19 @@ def render( md_source, template_fn, site_cfg, config, cfg_tree, input_root ):
 
     hard_dependencies = []
     soft_dependencies = []
+
+    if 'mirror' in config:
+        mirror_fn = config['mirror']
+        
+        hard_dependencies.append(mirror_fn)
+
+        try:
+            with open(mirror_fn, 'r', encoding='utf-8') as mirror_file:
+                html_code= mirror_file.read()
+        except FileNotFound as e:
+            html_code= "Mirror file not found: %s" % str(e)
+
+        return html_code, soft_dependencies, hard_dependencies
 
     url_transform = get_url_transform( input_root, soft_dependencies )
     template = load_template( template_fn, hard_dependencies, url_transform )

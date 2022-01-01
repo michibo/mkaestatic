@@ -18,8 +18,8 @@
 
 # How to call statico.py and configo.py:
 
-MD                =          python statico.py $< --configs "$(strip $(CONFIGS))" --site_config $(SITE_CONFIG)
-CONF              =          python configo.py $<
+MD                =          python3 statico.py $< --configs "$(strip $(CONFIGS))" --site_config $(SITE_CONFIG)
+CONF              =          python3 configo.py $<
 
 SITE_CONFIG       := Site.yml
 
@@ -84,7 +84,7 @@ tar:        targets
 
 .PHONY:		upload
 upload:     targets
-	tar cf - $(FILES) | ssh $(SSH_SERVER) "cd $(SSH_FOLDER) && tar xf - && chmod 701 . && chmod 705 $(FILES)"
+	tar cf - $(FILES) | ssh $(SSH_SERVER) "cd $(SSH_FOLDER) && tar xf - && chmod 755 . && chmod 755 $(FILES)"
 
 .PHONY:		clean
 clean:
