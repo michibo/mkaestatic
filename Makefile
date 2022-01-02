@@ -85,6 +85,10 @@ targets:	$(FILES)
 serve:      targets
 	python3 -m http.server 8000
 
+.PHONY:		git-add-requisites
+git-add-requisites:      targets
+	git add $(FILES)
+
 
 BUILT_FOLDER:=built
 

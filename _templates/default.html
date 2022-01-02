@@ -33,17 +33,16 @@
           
           <nav>
             <ul>
-              {% for p in root %}
-                {% if not p.nomenu %}
-                  <li><a href="{{ p.url  | localurl }}">{{ p.title|e }}</a></li>
-                {% endif %}
+              {% for p in root if not p.nomenu%}
+                <li><a href="{{ p.url  | localurl }}">{{ p.title|e }}</a></li>
               {% endfor %}
             </ul>
           </nav> 
           
         </header>
 
-        {# Only include a blog menu if the blog-directory is included #}
+        {# Only show the blog menu if the blog-directory is included #}
+        {# This shall demonstrate the subdirectory feature of mkaestatic #}
         {% if 'blog' in root %}
         <hr />
         <div>

@@ -44,7 +44,6 @@ PAGES_SRC_$(d):=$(wildcard $(d)*.md)
 
 # Add subdirectories here in random order:
 
-
 # Load config and pages from blog/
 #########################################
 # Uncomment the following section for the subdirectories example
