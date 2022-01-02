@@ -3,4 +3,3 @@ name : "mkaestatic"
 tagline : "is awesome"
 
 template : _templates/default.html
-

@@ -34,6 +34,8 @@ import yaml, jinja2, mistune
 from collections import defaultdict
 
 def mdsplit( md_source ):
+    ''' Function used to split Markdown files using Jekyll notation
+    '''
     m = re.match( r"\s*(?:^---\s*$|)(.*?)\s*^---\s*$(.*)", md_source, re.DOTALL | re.MULTILINE )
 
     if m:

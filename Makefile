@@ -11,7 +11,7 @@
 # Author: Michael Borinsky
 # Github: https://github.com/michibo/mkaestatic
 # License: MIT
-# Copyright 2016
+# Copyright 2016-2022
 
 
 #########################################################################
@@ -25,6 +25,9 @@ SSH_FOLDER:= public_html
 
 # Optionally add further necessary files to the website which will also be deployed:
 REQUISITES:=
+
+# For instance
+#REQUISITES:= robots.txt .htaccess
 
 #########################################################################
 #########################################################################
@@ -73,7 +76,6 @@ MKCONFIGS+=Pages.mk
 $(TGTS) $(DEPS) : $(CONFIGS) $(MKCONFIGS) $(SITE_CONFIG)
 
 # FILES contains all files which are needed by the website (which are known to make):
-
 FILES:= $(sort $(TGTS) $(REQUISITES))
 
 # PHONY targets add more if needed:
@@ -81,30 +83,35 @@ FILES:= $(sort $(TGTS) $(REQUISITES))
 .PHONY:		targets
 targets:	$(FILES)
 
+# Use standard local http server integrated in python
 .PHONY:		serve
 serve:      targets
 	python3 -m http.server 8000
 
-.PHONY:		git-add-requisites
-git-add-requisites:      targets
-	git add $(FILES)
-
 
 BUILT_FOLDER:=built
 
+# Copies all necessary files to the BUILT_FOLDER
 .PHONY:     build
 build:      targets
 	rm -rf $(BUILT_FOLDER) && mkdir built && tar cf - $(FILES) | ( cd $(BUILT_FOLDER) && tar xf - )
 
 BUILT_TARFILE:=built.tar.gz
 
+# tar's all the necessary files
 .PHONY:     tar
 tar:        targets
 	tar czf $(BUILT_TARFILE) $(FILES)
 
+# uploads all the necessary files via ssh
 .PHONY:		upload
 upload:     targets
 	tar cf - $(FILES) | ssh $(SSH_SERVER) "cd $(SSH_FOLDER) && tar xf - && chmod 755 . && chmod 755 $(FILES)"
+
+# adds all the necessary files to the local git repository
+.PHONY:		git-add-requisites
+git-add-requisites:      targets
+	git add $(FILES)
 
 .PHONY:		clean
 clean:
