@@ -208,7 +208,7 @@ nomenu: true
     &lt;/li&gt;
 {% endfor %}
 </code></pre>
-<p>will render a menu item for every page in the top-level directory (i.e. .md file), which was added in the top-level <em>Pages.mk</em>. The page will only be included if the local configuration of the page does not contain a <strong>nomenu</strong> attribute, because of the</p>
+<p>will render a menu item for every page (i.e. .md file) in the top-level directory, which was added in the top-level <em>Pages.mk</em>. The page will only be included if the local configuration of the page does not contain a <strong>nomenu</strong> attribute, because of the</p>
 <pre><code>if not p.nomenu 
 </code></pre>
 <p>filter in the for-loop.</p>

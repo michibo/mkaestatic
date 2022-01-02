@@ -6,7 +6,7 @@
 # to every subdirectory of the project. 
 # 
 # The marked sections SUBDIRECTORIES and 
-# LOCAL PAGES need to be modified accordingly. 
+# LOCAL PAGES can be modified as needed.
 #
 # Author: Michael Borinsky
 # Github: https://github.com/michibo/mkaestatic

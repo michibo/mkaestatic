@@ -197,7 +197,7 @@ In the Jinja template the variable **root** can be accessed. This variable mirro
             <a href="{{ p.url | localurl }}">{{ p.title|e }}</a>
         </li>
     {% endfor %}
-will render a menu item for every page in the top-level directory (i.e. .md file), which was added in the top-level *Pages.mk*. The page will only be included if the local configuration of the page does not contain a **nomenu** attribute, because of the 
+will render a menu item for every page (i.e. .md file) in the top-level directory, which was added in the top-level *Pages.mk*. The page will only be included if the local configuration of the page does not contain a **nomenu** attribute, because of the 
 
     if not p.nomenu 
 filter in the for-loop.
