@@ -91,6 +91,8 @@ def load_configs( config_fns, input_cfg_fn, input_root ):
     '''
     cfg_tree = dirlisttree()
 
+    found_self = False
+
     for cfg_fn in config_fns:
         if path.isabs(cfg_fn):
             raise ValueError('Error: You cannot use absolute paths here: %s' % cfg_fn)
@@ -112,10 +114,14 @@ def load_configs( config_fns, input_cfg_fn, input_root ):
         # Configuration of current page gets special attention:
         if cfg_fn == input_cfg_fn:
             config = cfg
+            found_self = True
 
         pure_fn, _ = path.split( cfg_fn )
 
         cfg_tree[pure_fn].append(cfg)
+
+    if not found_self:
+        raise RuntimeError('There seems to be a html file that is referenced, but not included in the make. Is it in a directory without a referenced Pages.mk file?')
 
     return cfg_tree, config
 

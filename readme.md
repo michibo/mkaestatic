@@ -1,9 +1,11 @@
 
-### What is it?
+## 1 What is it?
 
 *mkaestatic* is a simple static website generator. It combines the standard tools [make](//www.gnu.org/software/make/), [python](//www.python.org/), [markdown](//daringfireball.net/projects/markdown/) and [jinja2](https://palletsprojects.com/p/jinja/).
 
-As most static website generators *mkaestatic* works by taking a bunch of markdown files e.g. *readme.md*, *about.md* and *contact.md* and converts them into html files *readme.html*, *about.html* and *contact.html*. It does so by using one or more jinja2 html files that encode the layout of the generated files. The markdown to html conversation can be controlled using a couple of configuration files and options that are integrated in the markdown files.
+As a static website generator *mkaestatic* converts markdown files (for instance *readme.md*, *about.md* and *contact.md*) into HTML files (for instance *readme.html*, *about.html* and *contact.html*). The markdown to HTML conversation is controlled by a jinja2 HTML template file, a configuration file and options that are integrated in the markdown files. 
+
+*mkaestatic* has a very simple commandline interface that allows rapid local website development and testing. This interface also integrates nicely with a static website hosting solution based on ssh or website hosting via *github Pages*.
 
 ### Cool Features
 
@@ -11,7 +13,7 @@ As most static website generators *mkaestatic* works by taking a bunch of markdo
 -   Markdown content / Jinja2 templates
 -   Purely relative URLs
     -   Websites can be copied in bulk to arbitrary subdirectories of web servers (for instance ~user/ websites) without any modification in code.
-    -   Websites can be surfed locally or remotely without a HTTP server. (File server is enough)
+    -   Websites can be surfed locally or remotely without a HTTP server (file server is enough)
     -   Websites can just be a git repository hosted for instance via github pages
 -   Arbitrary deep subdirectories
 -   Fast build times even for large projects as changes and dependencies are managed by make
@@ -34,23 +36,70 @@ To run *mkaestatic* a
 The extra python packages can be installed for instance with *pip*
 
     pip install mistune jinja2 pyyaml
-### Quickstart
+## 2 Quickstart
 
-#### Preparation
+### Preparation
 
 Either clone, fork or template the [repository](https://github.com/michibo/mkaestatic) on github or copy the 
 
-- code files *Makefile* and *mkaestatic.py*
-- and the two configuration files *Pages.mk* and *Site.mk*
-- optionally create subdirectories. Each subdirectory must have another *Pages.mk* config file (see the example in the *blog* folder)
+- code files *mkaestatic.py*, *Makefile* and *Pages.mk*
+- and the global configuration file *Site.yml*
 
-#### Setup your pages
+### Creating a HTML template
+
+To use *mkaestatic* a jinja2 HTML template is needed. For a start you can try out the one in this repository in the file *_template/default.html*. The path to the template file must either be given in the global *Site.yml* file or in each .md file individiually. 
+
+### Create markdown files
+
+After the template is ready you can create markdown .md files in the working directory. In the markdown files you can link to other files. In the HTML files the hyperlinks will be properly reinterpreted as relative paths between files. This repository contains the example pages (i.e. .md files):
+
+- readme.md (this file)
+- example.md (an example with a referenced image)
+- index.md (mirrors the readme.md file)
+- contact.md (another example)
+- other pages (i.e. .md files) in the blog directory to illustrate how subdirectories work
+
+### Run mkaestatic
+
+To test the resulting website you can call
+
+    make serve
+This command converts all .md files into HTML files using mkaestatic and starts a local webserver with which the result can be tested. The command line output indicates how you can access the website in your browser. To immediately see something you need to create an *index.md* file that will be compiled to an *index.html* file by mkaestatic.
+
+The other mkaestatic commands are 
+
+    make
+which just converts the .md files to HTML files,
+
+    make clean
+which deletes all temporary files (including .html files that where generated),
+
+    make build
+which copies all the deployment files into a *built* folder. This folder contains all the necessary files to access the website and no other files,
+
+    make tar
+which creates a tar archive *built.tar.gz* with the complete website and no other files in the workspace directory,
+
+    make upload
+which uploads the deployed website to a folder via ssh (the ssh server information must be set in the *Makefile* for this to work).
+
+## 3 Advanced features
+
+### Set up your Pages.mk files in detail
 
 In *Pages.mk* the *pages* and *subdirectories* of the root directory can be configured. The file is quite long, but most of it is just recursive make management. 
 
-The filenames of the *page*-files can be added to one line of the *Pages.mk* file. The make variable *PAGES_SRC_$(d)* must be set to the list of *pages*:
+By default all .md files in the directory are included as pages in the ordinary *Pages.mk* file.
+The filenames of the *page*-files can also be added one-by-one to the *Pages.mk* file. 
+To do so comment out or delete the line 
+
+    PAGES_SRC_$(d):=$(wildcard $(d)*.md)
+in the *Pages.mk* file.
+
+The make variable *PAGES_SRC_$(d)* must be set to the list of *pages*. For instance you can add use the line
 
     PAGES_SRC_$(d):=$(d)index.md $(d)readme.md
+instead. 
 A page is a markdown file with a .md suffix, which will eventually be compiled to a HTML-file. A prefix **$(d)** needs to be added filename. This adds the name of the current directory before the path of *page* in accordance to non-recursive make practice. The line needs to be inserted into *Pages.mk* in the following place:
 
     ... non recursive make stuff ...
@@ -70,7 +119,7 @@ A page is a markdown file with a .md suffix, which will eventually be compiled t
 
 Two files are added as target for your project: *index.html* and *readme.html*, which will be generated from the markdown files *index.md* and *readme.md* respectively. 
 
-#### Setup your subdirectories (optional feature)
+### Setup your subdirectories (optional feature)
 
 To add subdirectories to the mkaestatic tree you need to modify the following section of *Pages.mk*:
 
@@ -140,7 +189,7 @@ The global **template** attribute in *Site.yml* again has a special role as it c
 
 #### Accessing page configurations in jinja templates
 
-The most important variable which is passed from mkaestatic to the jinja template is the **content** variable. It contains the html-code which was rendered from the markdown input. Normally, you would want to include something like,
+The most important variable which is passed from mkaestatic to the jinja template is the **content** variable. It contains the HTML-code which was rendered from the markdown input. Normally, you would want to include something like,
 
     <div>{{ content }}</div>
 
@@ -150,11 +199,11 @@ in the middle of your template for the markdown content to actually be rendered.
 
 The set attributes can be accessed in the jinja template with the **page**, **site** or **root** variables. For instance, **page.title** or **page.date** will refer to the values given in the header of *index.md* when *index.html* is compiled.
 
-Your jinja template might contain the following line for the **title** tag side the html header:
+Your jinja template might contain the following line for the **title** tag side the HTML header:
 
     <title>{{ site.name|e }} - {{ page.title|e }}</title>
 
-The jinja filter |e escapes special characters in the variables to html. 
+The jinja filter |e escapes special characters in the variables to HTML. 
 
 The value of **site.name**, the one defined in *Site.yml*, is similar for all pages in the *mkaestatic* instance, whereas **page.title** will differ from page to page depending on the definition of **title** in the page header.
 
@@ -196,16 +245,16 @@ will loop over all pages inside the *blog/* subdirectory. The subdirectory and t
 
 #### Special attributes
 
-Every page has three special attributes which are set internally by *mkaestatic*: **name**, **url** and **title**. The attribute **name** is the basename of the filename of the md-file for the page. **url** is the URL which can be used to reference the page html-file. **title** is the same as **name** by default, but can be overwritten in the local configuration. 
+Every page has three special attributes which are set internally by *mkaestatic*: **name**, **url** and **title**. The attribute **name** is the basename of the filename of the md-file for the page. **url** is the URL which can be used to reference the page HTML-file. **title** is the same as **name** by default, but can be overwritten in the local configuration. 
 
-Optionally, the attribute **mirror** can be set in the local configuration of a page. **mirror** must be set to the filename of another page, whose content will be merely copied to the html of the page. This can be useful to deal with compatibility in respect to old url schemes.
+Optionally, the attribute **mirror** can be set in the local configuration of a page. **mirror** must be set to the filename of another page, whose content will be merely copied to the HTML of the page. This can be useful to deal with compatibility in respect to old url schemes.
 
 Let's say for example that *index.html* shall have the same content as *readme.html*:
 
 index.md:
 
     ---
-    mirror: readme.html
+    mirror: readme.HTML
     nomenu: true
     ---
 
@@ -229,32 +278,6 @@ Additionally, the filter is used to add the file '/static/css/style.css' to the 
 
 If you want actually want to specify a relative URL leave the leading slash. The URL will be resolved with respect to the directory the current *page* (not the template!).
 
-#### Start everything
-
-To build everything call
-
-    make
-
-in the top-level directory and access the pages using your web browser.
-
-To copy the files to another directory call
-
-    make build
-
-all the necessary files will be copied to the *built* directory inside the root directory. The directory can be copied anywhere without breaking links.
-
-If you really want to you can also start the python toy web server with 
-
-    make serve
-
-the page can be accessed under the URL [localhost:8000](//localhost:8000). 
-
-To pack the website into a tarball call 
-
-    make tar
-
-this will create a file *built.tar.gz* with all the contents of the website. With some archive managers you can even access the website completely inside the tarball without properly unpacking.
-
 #### Uploading to ssh-server
 
 You can use *mkaestatic* to upload your static website to a server via ssh. The necessary ssh-info must be set in the configuration file *Site.mk*: 
@@ -268,12 +291,11 @@ The command
 
     make upload
 
-will upload all the generated html files and all requisites of the page, which are in the dependency tree of make, to the server. Links in markdown code and links which are filtered with the *localurl* jinja will be automatically included in the upload. 
+will upload all the generated HTML files and all requisites of the page, which are in the dependency tree of make, to the server. Links in markdown code and links which are filtered with the *localurl* jinja will be automatically included in the upload. 
 
 If some static file is missing maybe you missed a | localurl filter in some template or a leading slash for a 'absolute' path.
 
 #### Example
 
-If you cloned this directory, ran *make* and everything worked out you can 'surf' the example project. Just open any html file with a browser.
+If you cloned this directory, ran *make* and everything worked out you can 'surf' the example project. Just open any HTML file with a browser.
 
-[Blog post](/blog/post1.html)

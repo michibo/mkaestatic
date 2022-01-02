@@ -13,18 +13,32 @@
 # License: MIT
 # Copyright 2016
 
+
+#########################################################################
+#########################################################################
+#########################################################################
+### CONFIGURATION ###
+
+# Optionally setup ssh server with user to push static website to:
+SSH_SERVER:= me@myserver.com
+SSH_FOLDER:= public_html
+
+# Optionally add further necessary files to the website which will also be deployed:
+REQUISITES:=
+
+#########################################################################
+#########################################################################
+#########################################################################
+
+# Config file for global website info (e.g. description in header etc)
+SITE_CONFIG       := Site.yml
+
 .SUFFIXES:
 .SUFFIXES:	.md .html .d .yml
 
-# How to call statico.py and configo.py:
-
+# How to call mkaestatic.py
 MD                =          python3 mkaestatic.py $< --configs "$(strip $(CONFIGS))" --site_config $(SITE_CONFIG)
 CONF              =          python3 mkaestatic.py $< --parse_yml
-
-# Optionally setup ssh server with user to push static website to:
-SSH_SERVER := me@myserver.com
-SSH_FOLDER := public_html
-
 
 # Start with empty page/dependency lists:
 PAGES:=
@@ -48,14 +62,13 @@ DEPS:=
 
 all:		targets
 
-# Include the root Pages.mk and the global Site.mk
+# Include the root Pages.mk
 
 include Pages.mk
-include Site.mk
 
-# The Pages.mk and Site.mk are themselves dependencies => rebuild everything if they are changed!
+# The Pages.mk are themselves dependencies => rebuild everything if they are changed!
 
-MKCONFIGS+=Pages.mk Site.mk
+MKCONFIGS+=Pages.mk
 
 $(TGTS) $(DEPS) : $(CONFIGS) $(MKCONFIGS) $(SITE_CONFIG)
 

@@ -11,34 +11,14 @@
 # Author: Michael Borinsky
 # Github: https://github.com/michibo/mkaestatic
 # License: MIT
-# Copyright 2016
+# Copyright 2016-2022
 
 
-# Standard non-recursive make things
+# Standard non-recursive make setup
 sp 		:= $(sp).x
 dirstack_$(sp)	:= $(d)
 d		:= $(dir)
 
-
-#########################################
-# SUBDIRECTORIES
-#########################################
-
-# Add subdirectories here in random order:
-
-# Load config and pages from blog/
-dir	:= $(d)blog/
-
-include		$(dir)Pages.mk
-MKCONFIGS+=$(dir)Pages.mk
-
-# Load more subdirectories ...
-#dir	:= $(d)blog2/
-
-#include		$(dir)Pages.mk
-#MKCONFIGS+=$(dir)Pages.mk
-
-#...
 
 #########################################
 # LOCAL PAGES
@@ -47,20 +27,46 @@ MKCONFIGS+=$(dir)Pages.mk
 # Add the pages for the current directory here:
 # (pages are just .md files)
 
-# By default all md files are included:
+# By default all .md files are included:
 PAGES_SRC_$(d):=$(wildcard $(d)*.md)
 
 # You can also restrict to specific ones:
 #PAGES_SRC_$(d):=$(d)readme.md $(d)index.md
 
 # Include the $(d) for reference to the local directory.
-# This is the famous non-recursive-make trick. 
+# This is the non-recursive-make trick. 
 # See for instance: http://evbergen.home.xs4all.nl/nonrecursive-make.html
 
+
+#########################################
+# SUBDIRECTORIES
+#########################################
+
+# Add subdirectories here in random order:
+
+
+# Load config and pages from blog/
+#########################################
+# Uncomment the following section for the subdirectories example
+#########################################
+#dir	:= $(d)blog/
+#
+#include		$(dir)Pages.mk
+#MKCONFIGS+=$(dir)Pages.mk
+#########################################
+
+# Load more subdirectories ...
+#dir	:= $(d)blog2/
+
+#-include		$(dir)Pages.mk
+#MKCONFIGS+=$(dir)Pages.mk
+
+#...
+
 #########################################
 #########################################
 
-### Recursive make stuff, no need to change.
+### Recursive make stuff, do not change!
 
 # Set make variables to manage the pages
 

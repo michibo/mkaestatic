@@ -1,16 +1,55 @@
 
-# Standard non-recursive make things
+# This is a Pages.mk file as part of the 
+# mkaestatic static website generator. 
+#
+# This make configuration file must be copied 
+# to every subdirectory of the project. 
+# 
+# The marked sections SUBDIRECTORIES and 
+# LOCAL PAGES need to be modified accordingly. 
+#
+# Author: Michael Borinsky
+# Github: https://github.com/michibo/mkaestatic
+# License: MIT
+# Copyright 2016-2022
+
+
+# Standard non-recursive make setup
 sp 		:= $(sp).x
 dirstack_$(sp)	:= $(d)
 d		:= $(dir)
 
 
-# Add local pages to make:
+#########################################
+# LOCAL PAGES
+#########################################
 
-PAGES_$(d):= $(wildcard $(d)*.md)
-# This includes all .md files in the 
-# directory in this case.
+# Add the pages for the current directory here:
+# (pages are just .md files)
 
+# By default all .md files are included:
+PAGES_SRC_$(d):=$(wildcard $(d)*.md)
+
+# You can also restrict to specific ones:
+#PAGES_SRC_$(d):=$(d)readme.md $(d)index.md
+
+# Include the $(d) for reference to the local directory.
+# This is the non-recursive-make trick. 
+# See for instance: http://evbergen.home.xs4all.nl/nonrecursive-make.html
+
+
+#########################################
+# SUBDIRECTORIES
+#########################################
+
+# Add subdirectories here in random order:
+
+# no more subdirectories here
+
+#########################################
+#########################################
+
+### Recursive make stuff, do not change!
 
 # Set make variables to manage the pages
 
@@ -30,6 +69,7 @@ DEPS+=$(DEPS_$(d))
 CLEAN+=$(TGTS_$(d)) $(CONFIGS_$(d)) $(DEPS_$(d))
 
 -include $(DEPS_$(d))
+
 
 # Standard non-recursive make things
 d		:= $(dirstack_$(sp))

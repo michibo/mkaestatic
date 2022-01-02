@@ -70,6 +70,15 @@ header label:after {
   font-weight: bold;
   font-size: 1.2em;
 }
+pre {
+    display: block;
+    color:white;
+    margin:1em; 
+    padding:1em; 
+    background: black;
+    font-size:180%;
+    font-weight: bold;
+}
   
 nav {
   float: right;
