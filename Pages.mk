@@ -57,7 +57,7 @@ PAGES_SRC_$(d):=$(wildcard $(d)*.md)
 # Load more subdirectories ...
 #dir	:= $(d)blog2/
 
-#-include		$(dir)Pages.mk
+#include		$(dir)Pages.mk
 #MKCONFIGS+=$(dir)Pages.mk
 
 #...
