@@ -1,7 +1,7 @@
 
 ## 1 What is it?
 
-**mkaestatic** is a simple static website generator. It combines the standard tools [make](//www.gnu.org/software/make/), [python](//www.python.org/), [Markdown](//daringfireball.net/projects/markdown/) and [Jinja](https://palletsprojects.com/p/jinja/).
+**mkaestatic** is a minimalist static website generator. It is very lightweight and simple, because it merely combines the powerful standard tools [make](//www.gnu.org/software/make/), [python](//www.python.org/), [Markdown](//en.wikipedia.org/wiki/Markdown) and [Jinja](//palletsprojects.com/p/jinja/).
 
 As a static website generator **mkaestatic** converts Markdown files (for instance *readme.md*, *about.md* and *contact.md*) into HTML files (for instance *readme.html*, *about.html* and *contact.html*). The Markdown to HTML conversation is controlled by a Jinja HTML template file, a configuration file and options that are integrated in the Markdown files. 
 
@@ -24,8 +24,8 @@ As a static website generator **mkaestatic** converts Markdown files (for instan
 ### Requirements
 
 To run **mkaestatic** a python3 installation is required. **mkaestatic** additionally requires
-- [Mistune](//github.com/lepture/mistune) as its Markdown implementation (Mistune >= 2.0), 
-- [Jinja2](//jinja.pocoo.org/docs/dev/) as a template engine and 
+- [Mistune](//mistune.readthedocs.io/) as its Markdown implementation (Mistune >= 2.0), 
+- [Jinja2](//jinja.palletsprojects.com/) as a template engine and 
 - [PyYAML](//pyyaml.org/) to read and write configuration files. 
 
 The extra python packages can be installed for instance with *pip*
@@ -35,7 +35,7 @@ The extra python packages can be installed for instance with *pip*
 
 ### Preparation
 
-Either clone, fork or template the [repository](https://github.com/michibo/mkaestatic) on GitHub or copy the 
+Either clone, fork or template the [repository](//github.com/michibo/mkaestatic) on GitHub or copy the 
 
 - code files *mkaestatic.py*, *Makefile* and *Pages.mk*
 - and the global configuration file *Site.yml*

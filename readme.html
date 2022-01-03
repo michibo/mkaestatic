@@ -65,7 +65,7 @@
         
           <h1 class="content-subhead">readme</h1>
           <h2>1 What is it?</h2>
-<p><strong>mkaestatic</strong> is a simple static website generator. It combines the standard tools <a href="//www.gnu.org/software/make/">make</a>, <a href="//www.python.org/">python</a>, <a href="//daringfireball.net/projects/markdown/">Markdown</a> and <a href="https://palletsprojects.com/p/jinja/">Jinja</a>.</p>
+<p><strong>mkaestatic</strong> is a minimalist static website generator. It is very lightweight and simple, because it merely combines the powerful standard tools <a href="//www.gnu.org/software/make/">make</a>, <a href="//www.python.org/">python</a>, <a href="//en.wikipedia.org/wiki/Markdown">Markdown</a> and <a href="//palletsprojects.com/p/jinja/">Jinja</a>.</p>
 <p>As a static website generator <strong>mkaestatic</strong> converts Markdown files (for instance <em>readme.md</em>, <em>about.md</em> and <em>contact.md</em>) into HTML files (for instance <em>readme.html</em>, <em>about.html</em> and <em>contact.html</em>). The Markdown to HTML conversation is controlled by a Jinja HTML template file, a configuration file and options that are integrated in the Markdown files.</p>
 <p><strong>mkaestatic</strong> has a simple command line interface that allows rapid local website development and testing. This interface is entirely based on <strong>make</strong> and integrates smoothly with static website hosting services based on ssh or website hosting via <a href="https://pages.github.com/">GitHub Pages</a>.</p>
 <h3>Features</h3>
@@ -87,8 +87,8 @@
 <h3>Requirements</h3>
 <p>To run <strong>mkaestatic</strong> a python3 installation is required. <strong>mkaestatic</strong> additionally requires</p>
 <ul>
-<li><a href="//github.com/lepture/mistune">Mistune</a> as its Markdown implementation (Mistune &gt;= 2.0),</li>
-<li><a href="//jinja.pocoo.org/docs/dev/">Jinja2</a> as a template engine and</li>
+<li><a href="//mistune.readthedocs.io/">Mistune</a> as its Markdown implementation (Mistune &gt;= 2.0),</li>
+<li><a href="//jinja.palletsprojects.com/">Jinja2</a> as a template engine and</li>
 <li><a href="//pyyaml.org/">PyYAML</a> to read and write configuration files.</li>
 </ul>
 <p>The extra python packages can be installed for instance with <em>pip</em></p>
@@ -96,7 +96,7 @@
 </code></pre>
 <h2>2 Quickstart</h2>
 <h3>Preparation</h3>
-<p>Either clone, fork or template the <a href="https://github.com/michibo/mkaestatic">repository</a> on GitHub or copy the</p>
+<p>Either clone, fork or template the <a href="//github.com/michibo/mkaestatic">repository</a> on GitHub or copy the</p>
 <ul>
 <li>code files <em>mkaestatic.py</em>, <em>Makefile</em> and <em>Pages.mk</em></li>
 <li>and the global configuration file <em>Site.yml</em></li>
