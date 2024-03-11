@@ -24,7 +24,7 @@ As a static website generator **mkaestatic** converts Markdown files (for instan
 ### Requirements
 
 To run **mkaestatic** a python3 installation is required. **mkaestatic** additionally requires
-- [Mistune](//mistune.readthedocs.io/) as its Markdown implementation (Mistune >= 2.0), 
+- [Mistune](//mistune.readthedocs.io/) as its Markdown implementation (Mistune >= 3.0.1), 
 - [Jinja2](//jinja.palletsprojects.com/) as a template engine and 
 - [PyYAML](//pyyaml.org/) to read and write configuration files. 
 
