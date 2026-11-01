@@ -3,11 +3,11 @@
 # script collection. mkaestatic can be used for static 
 # website generation. 
 #
-# statico.py is the 'heart' of mkaestatic as it implements 
+# mkaestatic.py is the 'heart' of mkaestatic as it implements 
 # the rendering of pages using the jinja template engine 
 # and the mistune markdown implementation. 
 # 
-# statico.py also generates dependency files for each markdown 
+# mkaestatic.py also generates dependency files for each markdown 
 # source file which add the respective static dependencies of the 
 # page to the makefile dependency tree. 
 #
@@ -18,15 +18,10 @@
 
 import argparse
 
-from codecs import open
-
 import os
 from os import path
 
-try:
-    from urllib.parse import urlparse
-except ImportError:
-    from urlparse import urlparse
+from urllib.parse import urlparse
 
 import re
 import yaml, jinja2, mistune
@@ -77,7 +72,7 @@ class dirlisttree(defaultdict):
 
     def __str__(self):
         return "%s; %s" % (", ".join( "%s" % fn for fn in self.files ),
-               ", ".join( "%s : %s" % (key,val) for key,val in self.iteritems() ))
+               ", ".join( "%s : %s" % (key,val) for key,val in self.items() ))
 
     def append(self, content):
         self.files.append(content)
@@ -135,20 +130,24 @@ def get_url_transform( input_root, soft_dep ):
     def url_transform( url ):
         res = urlparse( url )
 
-        # Do nothing if url points to the www
-        if res.netloc:
+        # Do nothing if url points to the www or is a pure #anchor
+        if res.netloc or res.scheme or not res.path:
             return url
 
+        # Keep ?query and #fragment parts (e.g. 'font.eot?#iefix', 'page.html#section')
+        suffix = url[len(res.path):]
+
         if res.path.startswith('/'):
-            url = res.path.lstrip('/')
-            if url:
-              soft_dep.append(url)
-              return path.relpath( url, input_root )
+            local_fn = res.path.lstrip('/')
+            if local_fn:
+                soft_dep.append(local_fn)
+                return path.relpath( local_fn, input_root ) + suffix
             else:
-              return path.relpath( '/', input_root )
+                # '/' refers to the top-level directory of the website
+                return path.relpath( os.curdir, input_root ) + "/" + suffix
         else:
             soft_dep.append(path.join(input_root, res.path))
-        
+
             return url
 
     return url_transform
@@ -209,19 +208,6 @@ def render( md_source, template_fn, site_cfg, config, cfg_tree, input_root ):
 
     hard_dependencies = []
     soft_dependencies = []
-
-    if 'mirror' in config:
-        mirror_fn = config['mirror']
-        
-        hard_dependencies.append(mirror_fn)
-
-        try:
-            with open(mirror_fn, 'r', encoding='utf-8') as mirror_file:
-                html_code= mirror_file.read()
-        except FileNotFoundError as e:
-            html_code= "Mirror file not found: %s" % str(e)
-
-        return html_code, soft_dependencies, hard_dependencies
 
     url_transform = get_url_transform( input_root, soft_dependencies )
     template = load_template( template_fn, hard_dependencies, url_transform )

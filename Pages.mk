@@ -27,8 +27,8 @@ d		:= $(dir)
 # Add the pages for the current directory here:
 # (pages are just .md files)
 
-# By default all .md files are included:
-PAGES_SRC_$(d):=$(wildcard $(d)*.md)
+# By default all .md files are included (except CLAUDE.md, which is not a page):
+PAGES_SRC_$(d):=$(filter-out $(d)CLAUDE.md,$(wildcard $(d)*.md))
 
 # You can also restrict to specific ones:
 #PAGES_SRC_$(d):=$(d)readme.md $(d)index.md

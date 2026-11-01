@@ -87,7 +87,7 @@
 <h3>Requirements</h3>
 <p>To run <strong>mkaestatic</strong> a python3 installation is required. <strong>mkaestatic</strong> additionally requires</p>
 <ul>
-<li><a href="//mistune.readthedocs.io/">Mistune</a> as its Markdown implementation (Mistune &gt;= 2.0),</li>
+<li><a href="//mistune.readthedocs.io/">Mistune</a> as its Markdown implementation (Mistune &gt;= 3.0.1),</li>
 <li><a href="//jinja.palletsprojects.com/">Jinja2</a> as a template engine and</li>
 <li><a href="//pyyaml.org/">PyYAML</a> to read and write configuration files.</li>
 </ul>
@@ -102,7 +102,7 @@
 <li>at least one example Markdown file <em>readme.md</em>, <em>example.md</em>, <em>contact.md</em> and/or <em>index.md</em></li>
 </ul>
 <h3>Create a HTML template</h3>
-<p>To use <strong>mkaestatic</strong> a Jinja HTML template is needed. As a start you can try the one which is contained in this repository <em>_template/default.html</em> and adapt it to your needs. The path to the template file must either be given in the global <em>Site.yml</em> configuration file or in each .md file individually.</p>
+<p>To use <strong>mkaestatic</strong> a Jinja HTML template is needed. As a start you can try the one which is contained in this repository <em>_templates/default.html</em> and adapt it to your needs. The path to the template file must either be given in the global <em>Site.yml</em> configuration file or in each .md file individually.</p>
 <h3>Create Markdown files</h3>
 <p>The next step is to create actual website content using Markdown (.md) files. This repository contains the example Markdown files,</p>
 <ul>
@@ -189,7 +189,7 @@ template : _templates/default.html</code></pre>
 <p>Let's say for example that <em>index.html</em> shall have the same content as <em>readme.html</em>:</p>
 <p>index.md:</p>
 <pre><code>---
-mirror: readme.HTML
+mirror: readme.html
 nomenu: true
 ---</code></pre>
 <h4>Accessing attributes via the directory tree</h4>

@@ -1,8 +1,9 @@
 
 # This is the Makefile for the mkaestatic 
 # program/script collection. Together with 
-# the python scripts statico.py and configo.py 
-# this can be used to generate static websites. 
+# the python script mkaestatic.py and the 
+# Pages.mk files this can be used to generate 
+# static websites. 
 # 
 # You can modify the file according to your needs. 
 # For instance, code for automatic css generation, 
@@ -51,14 +52,14 @@ CLEAN:=
 MKCONFIGS:=
 DEPS:=
 
-# Statico generates html AND dependency files (.d):
+# mkaestatic.py generates html AND dependency files (.d):
 %.html  :   %.md
 	$(MD)
 
 %.d     :   %.md
 	$(MD)
 
-# Configo generates .yml files. This is a workaround to prohibit a complete rebuild after changes of md-file content:
+# mkaestatic.py --parse_yml generates .yml files. This is a workaround to prohibit a complete rebuild after changes of md-file content:
  
 %.yml   :   %.md
 	$(CONF)
@@ -94,7 +95,7 @@ BUILT_FOLDER:=built
 # Copies all necessary files to the BUILT_FOLDER
 .PHONY:     build
 build:      targets
-	rm -rf $(BUILT_FOLDER) && mkdir built && tar cf - $(FILES) | ( cd $(BUILT_FOLDER) && tar xf - )
+	rm -rf $(BUILT_FOLDER) && mkdir $(BUILT_FOLDER) && tar cf - $(FILES) | ( cd $(BUILT_FOLDER) && tar xf - )
 
 BUILT_TARFILE:=built.tar.gz
 

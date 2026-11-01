@@ -43,7 +43,7 @@ Either clone, fork or template the [repository](//github.com/michibo/mkaestatic)
 
 ### Create a HTML template
 
-To use **mkaestatic** a Jinja HTML template is needed. As a start you can try the one which is contained in this repository *_template/default.html* and adapt it to your needs. The path to the template file must either be given in the global *Site.yml* configuration file or in each .md file individually. 
+To use **mkaestatic** a Jinja HTML template is needed. As a start you can try the one which is contained in this repository *_templates/default.html* and adapt it to your needs. The path to the template file must either be given in the global *Site.yml* configuration file or in each .md file individually. 
 
 ### Create Markdown files
 
@@ -181,7 +181,7 @@ Let's say for example that *index.html* shall have the same content as *readme.h
 index.md:
 
     ---
-    mirror: readme.HTML
+    mirror: readme.html
     nomenu: true
     ---
 #### Accessing attributes via the directory tree
